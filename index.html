@@ -3,886 +3,846 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Digital &amp; Card Transaction Statistics — Commercial Bank</title>
+<title>Commercial Bank · Transaction Intelligence</title>
 <script src="https://cdn.jsdelivr.net/gh/tableau/extensions-api/lib/tableau.extensions.1.latest.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#f5f7fb; --bgImage:none; --surface:#ffffff; --surface2:#f0f3f9; --border:#e3e8f2;
-  --text:#0e1626; --sub:#63708c; --accent:#3b5bdb; --accent2:#0ca678;
-  --good:#0ca678; --bad:#e03131; --warn:#e8890c; --error:#d63031;
-  --d0:#3b5bdb; --d1:#0ca678; --d2:#7048e8; --d3:#f08c00; --d4:#d6336c; --d5:#1098ad; --d6:#868e96;
-  --shadow:0 6px 24px rgba(14,22,38,.07); --heroGrad:linear-gradient(90deg,#3b5bdb,#1098ad);
-  --blur:none; --glowText:none;
+  --bg-primary:#f0f3f8;
+  --bg-secondary:#ffffff;
+  --bg-tertiary:#f7f9fc;
+  --bg-card:#ffffff;
+  --text-primary:#0a1628;
+  --text-secondary:#4a5a72;
+  --text-muted:#8896b0;
+  --border-light:#e8edf4;
+  --border-medium:#d5dee8;
+  --accent:#1a4cff;
+  --accent-hover:#0033cc;
+  --accent-light:#e8edff;
+  --success:#00a86b;
+  --warning:#f59e0b;
+  --danger:#ef4444;
+  --shadow-sm:0 1px 3px rgba(10,22,40,.06);
+  --shadow-md:0 4px 16px rgba(10,22,40,.08);
+  --shadow-lg:0 8px 32px rgba(10,22,40,.10);
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --radius-xl:20px;
+  --transition:all .25s cubic-bezier(.4,0,.2,1);
+  --font:Inter,-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:JetBrains Mono,monospace;
 }
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;min-height:100%}
 body{
-  background:var(--bg); background-image:var(--bgImage); background-attachment:fixed;
-  color:var(--text); font-family:Inter,system-ui,sans-serif; transition:background .4s;
+  font-family:var(--font);
+  background:var(--bg-primary);
+  color:var(--text-primary);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
-button{font-family:inherit} input{outline:none;font-family:inherit}
-input:focus{border-color:var(--accent)!important}
-::-webkit-scrollbar{width:9px;height:9px}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:6px}
-::-webkit-scrollbar-track{background:transparent}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
-@keyframes sweep{to{stroke-dashoffset:0}}
-@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
-
-.app{display:flex;min-height:100vh;position:relative}
-.rail{
-  width:214px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;padding:16px 10px;gap:4px;position:sticky;top:0;height:100vh;
-  overflow:hidden;z-index:5;transition:width .3s cubic-bezier(.2,.7,.2,1);
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+.app{display:flex;min-height:100vh}
+/* Sidebar */
+.sidebar{
+  width:240px;
+  background:var(--bg-secondary);
+  border-right:1px solid var(--border-light);
+  display:flex;
+  flex-direction:column;
+  padding:24px 16px;
+  flex-shrink:0;
+  position:sticky;
+  top:0;
+  height:100vh;
+  transition:var(--transition);
 }
-.rail.closed{width:62px}
-.rail .brand{display:flex;align-items:center;gap:10px;padding:4px 6px 14px}
-.rail .brand-txt{white-space:nowrap;overflow:hidden}
-.rail .brand-txt b{display:block;font:700 13px Sora,sans-serif;color:var(--text)}
-.rail .brand-txt span{font-size:9.5px;letter-spacing:1.4px;color:var(--sub)}
-.rail.closed .brand-txt,.rail.closed .nav-lbl{display:none}
-.nav-btn{
-  display:flex;align-items:center;gap:12px;border:none;cursor:pointer;background:transparent;
-  border-left:3px solid transparent;border-radius:10px;padding:10px 11px;color:var(--sub);
-  font-weight:600;font-size:13px;white-space:nowrap;transition:all .2s;text-align:left;width:100%;
+.sidebar.collapsed{width:72px}
+.sidebar .brand{display:flex;align-items:center;gap:12px;padding:0 8px 24px}
+.sidebar .brand-icon{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--accent),#6c8cff);
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-weight:800;
+  font-size:16px;
+  flex-shrink:0;
 }
-.nav-btn.on{background:var(--surface2);border-left-color:var(--accent);color:var(--text)}
-.nav-btn.boxed{border:1px solid var(--border);background:var(--surface2);border-left-width:1px;margin-bottom:8px}
-.rail .spacer{margin-top:auto}
-.mainwrap{flex:1;min-width:0;display:flex;flex-direction:column}
-main{flex:1;padding:24px 30px 14px}
-header.top{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
-.eyebrow{font:700 10.5px Sora,sans-serif;letter-spacing:2px;color:var(--accent)}
-h1.title{margin:3px 0 0;font:700 22px Sora,sans-serif;letter-spacing:-.02em;color:var(--text)}
-.scopebar{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.scopeinfo{font:500 11.5px 'JetBrains Mono',monospace;color:var(--sub);margin-left:6px}
-footer{
-  display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 30px;
-  border-top:1px solid var(--border);font-size:11.5px;color:var(--sub);background:var(--surface);
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+.sidebar .brand-text{transition:var(--transition);overflow:hidden}
+.sidebar .brand-text h1{font-size:16px;font-weight:700;letter-spacing:-.3px;white-space:nowrap}
+.sidebar .brand-text p{font-size:10px;font-weight:500;color:var(--text-muted);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.sidebar.collapsed .brand-text{opacity:0;width:0;margin:0}
+.nav-list{display:flex;flex-direction:column;gap:2px;flex:1}
+.nav-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;
+  border-radius:var(--radius-sm);
+  border:none;
+  background:transparent;
+  color:var(--text-secondary);
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  transition:var(--transition);
+  width:100%;
+  text-align:left;
+  font-family:var(--font);
 }
-footer .dot{width:7px;height:7px;border-radius:50%;display:inline-block;animation:blink 2.4s ease-in-out infinite}
-footer .right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-footer b{color:var(--text)} footer .brandline{display:inline-flex;align-items:center;gap:7px}
-footer .sep{opacity:.4}
+.nav-item:hover{background:var(--bg-tertiary);color:var(--text-primary)}
+.nav-item.active{
+  background:var(--accent-light);
+  color:var(--accent);
+  font-weight:600;
+}
+.nav-item .icon{font-size:18px;flex-shrink:0;width:24px;text-align:center}
+.nav-item .label{white-space:nowrap;transition:var(--transition)}
+.sidebar.collapsed .nav-item .label{display:none}
+.sidebar-footer{margin-top:auto;padding-top:16px;border-top:1px solid var(--border-light)}
+/* Main Content */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.header{
+  padding:20px 32px;
+  background:var(--bg-secondary);
+  border-bottom:1px solid var(--border-light);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:12px;
+  backdrop-filter:blur(12px);
+}
+.header-left h2{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.header-left p{font-size:13px;color:var(--text-secondary);margin-top:2px}
+.header-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.scope-group{display:flex;gap:4px;background:var(--bg-tertiary);padding:4px;border-radius:var(--radius-sm)}
+.scope-btn{
+  padding:6px 14px;
+  border:none;
+  border-radius:6px;
+  background:transparent;
+  color:var(--text-secondary);
+  font-size:12px;
+  font-weight:500;
+  cursor:pointer;
+  transition:var(--transition);
+  font-family:var(--font);
+}
+.scope-btn:hover{color:var(--text-primary)}
+.scope-btn.active{background:var(--bg-secondary);color:var(--text-primary);box-shadow:var(--shadow-sm)}
+.status-badge{
+  display:flex;align-items:center;gap:6px;
+  padding:4px 14px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:500;
+}
+.status-badge.online{background:#e6f7ef;color:var(--success)}
+.status-badge.offline{background:#fef2f2;color:var(--danger)}
+.status-badge.warning{background:#fffbeb;color:var(--warning)}
+.status-dot{width:6px;height:6px;border-radius:50%;display:inline-block}
+.status-dot.green{background:var(--success)}
+.status-dot.red{background:var(--danger)}
+.status-dot.yellow{background:var(--warning)}
+/* Content Area */
+.content{padding:24px 32px;flex:1}
+/* Cards */
 .card{
-  background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;
-  box-shadow:var(--shadow);animation:fadeUp .5s cubic-bezier(.2,.7,.2,1) both;
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  background:var(--bg-card);
+  border-radius:var(--radius-lg);
+  border:1px solid var(--border-light);
+  padding:24px;
+  transition:var(--transition);
 }
-.card.tight{padding:0;overflow:hidden}
-.stack{display:flex;flex-direction:column;gap:18px}
-.row{display:flex;gap:16px;flex-wrap:wrap}
-.sect-head{display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-.sect-head h3{margin:0;font:700 15px Sora,sans-serif;letter-spacing:-.01em;color:var(--text)}
-.sect-head .sub{font-size:11.5px;color:var(--sub);margin-top:2px}
-.sect-head .right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.chip{
-  display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;
-  font-size:12px;font-weight:600;line-height:1.5;background:var(--surface2);color:var(--sub);
-  border:1px solid var(--border);cursor:default;user-select:none;transition:all .2s;white-space:nowrap;
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.card-header h3{font-size:15px;font-weight:600}
+.card-header .sub{font-size:12px;color:var(--text-secondary)}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+.metric{
+  padding:16px 20px;
+  background:var(--bg-tertiary);
+  border-radius:var(--radius-md);
+  border:1px solid var(--border-light);
 }
-.chip.sm{padding:3px 9px;font-size:11px}
-.chip.click{cursor:pointer}
-.chip.on{background:var(--accent);border-color:var(--accent);color:#fff}
-.chip.good{color:var(--good)} .chip.bad{color:var(--bad)} .chip.warnc{color:var(--warn)}
-.chip .sw{width:9px;height:9px;border-radius:2px;display:inline-block}
+.metric .label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.metric .value{font-size:26px;font-weight:700;margin:4px 0;letter-spacing:-.5px;font-family:var(--mono)}
+.metric .change{font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:4px}
+.metric .change.up{color:var(--success)}
+.metric .change.down{color:var(--danger)}
+.metric .sub{font-size:12px;color:var(--text-secondary)}
+/* Tables */
+.table-wrap{overflow-x:auto;border-radius:var(--radius-sm)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+table th{
+  text-align:left;
+  padding:12px 16px;
+  font-weight:600;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:var(--text-muted);
+  border-bottom:2px solid var(--border-light);
+  background:var(--bg-tertiary);
+}
+table td{padding:12px 16px;border-bottom:1px solid var(--border-light)}
+table tbody tr:hover{background:var(--bg-tertiary)}
+.mono{font-family:var(--mono);font-size:13px}
 .badge{
-  font:700 11.5px 'JetBrains Mono',monospace;padding:2px 8px;border-radius:999px;
-  background:var(--surface2);border:1px solid var(--border);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:4px;
+  padding:2px 10px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:600;
 }
-.badge.up{color:var(--good)} .badge.dn{color:var(--bad)}
-.kpi{
-  background:var(--surface);border:1px solid var(--border);border-radius:18px;
-  padding:16px 18px 12px;box-shadow:var(--shadow);min-width:235px;flex:1 1 245px;
-  position:relative;overflow:hidden;animation:fadeUp .5s cubic-bezier(.2,.7,.2,1) both;
-  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+.badge.success{background:#e6f7ef;color:var(--success)}
+.badge.warning{background:#fffbeb;color:var(--warning)}
+.badge.danger{background:#fef2f2;color:var(--danger)}
+.badge.info{background:#e8edff;color:var(--accent)}
+/* Empty State */
+.empty-state{
+  text-align:center;
+  padding:60px 20px;
 }
-.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--heroGrad);opacity:.9}
-.kpi .lbl{font:700 10.5px Sora,sans-serif;letter-spacing:1.4px;color:var(--sub);text-transform:uppercase}
-.kpi .val{font:700 27px 'JetBrains Mono',monospace;color:var(--text);letter-spacing:-.02em;text-shadow:var(--glowText)}
-.kpi .valrow{display:flex;align-items:center;gap:9px;margin:7px 0 3px;flex-wrap:wrap}
-.kpi .note{font-size:11px;color:var(--sub);margin-bottom:2px}
-.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.mini-tbl{width:100%;border-collapse:collapse;font-size:12.8px}
-.mini-tbl thead tr{background:var(--surface2);color:var(--sub);text-align:left}
-.mini-tbl th{padding:12px 16px;font:700 10.5px Sora,sans-serif;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap}
-.mini-tbl td{padding:10px 16px;color:var(--text)}
-.mini-tbl tbody tr{border-top:1px solid var(--border);transition:background .15s}
-.mini-tbl tbody tr:hover{background:var(--surface2)}
-.mono{font-family:'JetBrains Mono',monospace}
-.tile{border:1px solid var(--border);background:var(--surface2);border-radius:12px;padding:10px 14px}
-.grid-auto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
-.inp{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:5px 9px;font-size:12px}
-.toggle{display:inline-flex;align-items:center;gap:8px;background:transparent;border:none;cursor:pointer;color:var(--sub);font-size:12px;font-weight:600;padding:0}
-.toggle .tk{width:34px;height:19px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);position:relative;transition:background .25s;flex-shrink:0}
-.toggle.on .tk{background:var(--accent)}
-.toggle .nb{position:absolute;top:2px;left:2px;width:13px;height:13px;border-radius:50%;background:var(--sub);transition:left .25s cubic-bezier(.2,.7,.2,1)}
-.toggle.on .nb{left:16px;background:#fff}
-.chartwrap{position:relative}
-.ctip{
-  position:absolute;top:6px;pointer-events:none;z-index:3;background:var(--surface);
-  border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);padding:9px 12px;
-  min-width:170px;display:none;backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+.empty-state .icon{font-size:56px;margin-bottom:16px}
+.empty-state h3{font-size:18px;font-weight:600;margin-bottom:8px}
+.empty-state p{color:var(--text-secondary);font-size:14px;max-width:480px;margin:0 auto}
+.empty-state .fields-grid{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.empty-state .fields-grid .tag{
+  padding:4px 14px;
+  background:var(--bg-tertiary);
+  border-radius:6px;
+  font-size:12px;
+  font-family:var(--mono);
+  border:1px solid var(--border-light);
 }
-.ctip .d{font:700 11px Inter;color:var(--sub);letter-spacing:.4px;margin-bottom:5px}
-.ctip .r{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:3px}
-.ctip .r .sw{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-.ctip .r .n{color:var(--sub);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
-.ctip .r b{color:var(--text);font-family:'JetBrains Mono',monospace}
-.seg{transition:opacity .25s,transform .35s cubic-bezier(.2,.7,.2,1);cursor:pointer}
-.seg:hover{opacity:.82}
-.donut-leg{display:flex;flex-direction:column;gap:4px;margin-top:6px;max-width:284px}
-.donut-leg .li{display:flex;align-items:center;gap:8px;font-size:12.5px;cursor:pointer;color:var(--text);padding:3px 5px;border-radius:7px;transition:background .15s}
-.donut-leg .li:hover{background:var(--surface2)}
-.errwrap{height:100vh;display:grid;place-items:center;background:#0c111c;padding:20px}
-.errcard{max-width:620px;padding:36px;border-radius:18px;background:#131a2a;border:1px solid #26314a;color:#e9eef8}
-.boot{height:100vh;display:grid;place-items:center;color:var(--sub);font:700 13px Sora,sans-serif;letter-spacing:3px;animation:pulse 1.2s ease-in-out infinite}
-kbd{font:700 11px 'JetBrains Mono',monospace;padding:3px 8px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--accent)}
-.theme-card{border:2px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:all .25s}
-.theme-card.on{border-color:var(--accent)}
-
-.error-box{padding:12px 16px;background:#ffebee;border-radius:8px;border-left:4px solid #c62828;margin:10px 0;}
-.warning-box{padding:12px 16px;background:#fff3e0;border-radius:8px;border-left:4px solid #e65100;margin:10px 0;}
-.field-list{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
-.field-item{
-  display:flex;align-items:center;gap:12px;padding:10px 14px;
-  background:var(--surface);border-radius:8px;border:1px solid var(--border);font-size:13px;
+/* Tabs */
+.tabs{display:flex;gap:2px;background:var(--bg-tertiary);padding:4px;border-radius:var(--radius-sm);margin-bottom:20px}
+.tab-btn{
+  padding:8px 20px;
+  border:none;
+  border-radius:6px;
+  background:transparent;
+  color:var(--text-secondary);
+  font-size:13px;
+  font-weight:500;
+  cursor:pointer;
+  transition:var(--transition);
+  font-family:var(--font);
 }
-.field-item .status-icon{font-size:18px;flex-shrink:0;}
-.field-item .field-name{font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--text);flex:1;}
-.field-item .field-status{
-  font-size:12px;padding:2px 12px;border-radius:12px;background:var(--surface2);color:var(--sub);white-space:nowrap;
+.tab-btn:hover{color:var(--text-primary)}
+.tab-btn.active{background:var(--bg-secondary);color:var(--text-primary);box-shadow:var(--shadow-sm)}
+/* Loading */
+.loading-overlay{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:400px;
 }
-.field-item .field-status.missing{background:#ffebee;color:#c62828;}
-.field-item .field-status.found{background:#e8f5e9;color:#2e7d32;}
-.field-item .field-detail{color:var(--sub);font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.data-preview{margin-top:16px;background:var(--surface2);border-radius:12px;padding:16px;border:1px solid var(--border);overflow-x:auto;}
-.data-preview table{width:100%;border-collapse:collapse;font-size:12px;}
-.data-preview th{text-align:left;padding:8px 12px;font:700 10px Sora,sans-serif;letter-spacing:0.8px;color:var(--sub);text-transform:uppercase;border-bottom:2px solid var(--border);}
-.data-preview td{padding:6px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);border-bottom:1px solid var(--border);}
-.data-preview .empty{color:var(--sub);font-style:italic;}
+.loading-spinner{
+  width:40px;height:40px;
+  border:3px solid var(--border-light);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-overlay p{margin-top:16px;color:var(--text-secondary);font-size:14px}
+/* Utilities */
+.mt-16{margin-top:16px}
+.mb-16{margin-bottom:16px}
+.gap-8{display:flex;gap:8px;flex-wrap:wrap}
+.flex{display:flex;align-items:center;gap:12px}
+.text-muted{color:var(--text-muted)}
+.text-secondary{color:var(--text-secondary)}
+.text-success{color:var(--success)}
+.text-danger{color:var(--danger)}
+.text-warning{color:var(--warning)}
+.font-mono{font-family:var(--mono)}
+/* Toast notifications */
+.toast{
+  position:fixed;bottom:24px;right:24px;
+  padding:14px 24px;
+  background:var(--bg-secondary);
+  border-radius:var(--radius-md);
+  box-shadow:var(--shadow-lg);
+  border:1px solid var(--border-light);
+  font-size:13px;
+  max-width:420px;
+  z-index:1000;
+  animation:slideUp .3s ease;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.toast .title{font-weight:600;margin-bottom:4px}
+.toast .close{float:right;background:none;border:none;font-size:18px;cursor:pointer;color:var(--text-muted)}
+.toast.error{border-left:4px solid var(--danger)}
+.toast.success{border-left:4px solid var(--success)}
+.toast.warning{border-left:4px solid var(--warning)}
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{width:60px;padding:16px 8px}
+  .sidebar .brand-text{display:none}
+  .sidebar .nav-item .label{display:none}
+  .header{padding:16px}
+  .content{padding:16px}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
-<div id="root"><div class="boot">LOADING TRANSACTION ANALYTICS</div></div>
+<div id="root"></div>
 <script>
 "use strict";
 
 /* =========================== CONSTANTS ========================== */
-const REQUIRED_COLS = ["TXN_DATE","GROUP","CATEGORY","SUB_CATEGORY","APPROVED_COUNT","DECLINED_COUNT"];
-const NULLISH = new Set(["%null%","null","(null)","(blank)","%missing%","undefined","nan"]);
-const CARD_CATS=["CBC Cards at CBC Devices","CBC Issuer Txns at Other ATMs","CBC Issuer Txns at Other POS","Other Bank Cards Acquired at CBC ATMs","Other Bank Cards Acquired at CBC POS"];
-const QPLUS_CAT="Q+ Transactions", DECLINED_CAT="Declined Card Transactions";
-const DIGITAL_CATS=["CEFTS Inward","CEFTS Outward","Inward e-Remittances","PayMaster","ComBank Digital — Financial","ComBank Digital — Non-Financial","Flash — Financial"];
-const SCHEMES=["LankaPay","Visa","MasterCard","UnionPay"];
-const THEMES={
- light:{label:"Light",mode:"light",blur:"none",bg:"#f5f7fb",bgImage:"none",surface:"#ffffff",surface2:"#f0f3f9",border:"#e3e8f2",text:"#0e1626",sub:"#63708c",accent:"#3b5bdb",accent2:"#0ca678",good:"#0ca678",bad:"#e03131",warn:"#e8890c",donut:["#3b5bdb","#0ca678","#7048e8","#f08c00","#d6336c","#1098ad","#868e96"],glow:"none",shadow:"0 6px 24px rgba(14,22,38,.07)",heroGrad:"linear-gradient(90deg,#3b5bdb,#1098ad)"},
- dark:{label:"Dark",mode:"dark",blur:"none",bg:"#0c111c",bgImage:"none",surface:"#131a2a",surface2:"#1b2438",border:"#26314a",text:"#e9eef8",sub:"#94a1bd",accent:"#6d8dff",accent2:"#31d0a5",good:"#31d0a5",bad:"#ff6b6b",warn:"#ffb347",donut:["#6d8dff","#31d0a5","#a78bfa","#ffa94d","#f783ac","#3bc9db","#8a94a6"],glow:"none",shadow:"0 10px 32px rgba(0,0,0,.5)",heroGrad:"linear-gradient(90deg,#6d8dff,#3bc9db)"},
- glass:{label:"Glassmorphism",mode:"dark",blur:"blur(18px) saturate(150%)",bg:"#070b18",bgImage:"radial-gradient(900px 620px at 12% 6%, rgba(96,132,255,.34), transparent 60%),radial-gradient(760px 560px at 88% 18%, rgba(78,224,193,.24), transparent 62%),radial-gradient(820px 640px at 62% 98%, rgba(167,139,250,.26), transparent 60%)",surface:"rgba(255,255,255,.065)",surface2:"rgba(255,255,255,.115)",border:"rgba(255,255,255,.15)",text:"#f1f5ff",sub:"#a8b6da",accent:"#7aa2ff",accent2:"#4ee0c1",good:"#4ee0c1",bad:"#ff7a90",warn:"#ffc861",donut:["#7aa2ff","#4ee0c1","#b79cff","#ffb066","#ff8fbf","#5fd8f0","#9aa7c7"],glow:"none",shadow:"0 8px 32px rgba(0,0,0,.38)",heroGrad:"linear-gradient(90deg,#7aa2ff,#4ee0c1)"},
- neon:{label:"Neon",mode:"dark",blur:"none",bg:"#060714",bgImage:"none",surface:"#0c0e22",surface2:"#131634",border:"#20255c",text:"#eef3ff",sub:"#8d97d6",accent:"#00e5ff",accent2:"#ff2ec4",good:"#39ff9c",bad:"#ff3d6e",warn:"#ffd23d",donut:["#00e5ff","#ff2ec4","#39ff9c","#ffd23d","#8f6bff","#ff8a3d","#6474d6"],glow:"0 0 16px",shadow:"0 0 26px rgba(0,229,255,.16)",heroGrad:"linear-gradient(90deg,#00e5ff,#ff2ec4)"},
- slate:{label:"Executive Slate",mode:"dark",blur:"none",bg:"#11151a",bgImage:"none",surface:"#181e25",surface2:"#202832",border:"#2c3742",text:"#eaeff3",sub:"#9cabb7",accent:"#52b9ae",accent2:"#cda94e",good:"#52b9ae",bad:"#e06a5e",warn:"#cda94e",donut:["#52b9ae","#cda94e","#7f9fb8","#b87f9f","#6aa66a","#c98a5e","#8a94a6"],glow:"none",shadow:"0 10px 30px rgba(0,0,0,.42)",heroGrad:"linear-gradient(90deg,#52b9ae,#cda94e)"},
- royal:{label:"Royal Gold",mode:"light",blur:"none",bg:"#f8f5ee",bgImage:"none",surface:"#fffdf8",surface2:"#f2eddf",border:"#e5ddc6",text:"#221d12",sub:"#71684f",accent:"#1f3a93",accent2:"#b8860b",good:"#2e7d32",bad:"#b3261e",warn:"#a06000",donut:["#1f3a93","#b8860b","#5e35b1","#00838f","#ad1457","#546e7a","#8a94a6"],glow:"none",shadow:"0 8px 26px rgba(34,29,18,.10)",heroGrad:"linear-gradient(90deg,#1f3a93,#b8860b)"},
+const REQUIRED_FIELDS = ["TXN_DATE","GROUP","CATEGORY","SUB_CATEGORY","APPROVED_COUNT","DECLINED_COUNT"];
+const NAV_ITEMS = [
+  { id:'overview', icon:'📊', label:'Overview' },
+  { id:'cards', icon:'💳', label:'Cards' },
+  { id:'digital', icon:'📱', label:'Digital' },
+  { id:'comparison', icon:'📈', label:'Comparison' },
+  { id:'dayvs', icon:'⚖️', label:'Day vs Day' },
+  { id:'data', icon:'📋', label:'Data' }
+];
+const SCOPES = [
+  { key:'D1', label:'Today' },
+  { key:'L7', label:'7D' },
+  { key:'L30', label:'30D' },
+  { key:'CM', label:'Month' }
+];
+
+/* =========================== STATE ========================== */
+const State = {
+  tab: 'overview',
+  scope: 'L7',
+  data: null,
+  raw: null,
+  cols: null,
+  validation: null,
+  loading: true,
+  error: null
 };
-const THEME_KEYS=Object.keys(THEMES);
-const SCOPES=[{key:"D1",label:"Yesterday"},{key:"L7",label:"Last 7 days"},{key:"L30",label:"Last 30 days"},{key:"CM",label:"Current month"},{key:"LM",label:"Last month"}];
-const NAV=[{id:"summary",label:"Summary"},{id:"cards",label:"Cards"},{id:"digital",label:"Digital"},{id:"compare",label:"Compare"},{id:"dayvs",label:"Day vs Day"},{id:"table",label:"Table View"},{id:"settings",label:"Settings"}];
 
-/* ================================ UTILS ================================= */
-const nfInt=new Intl.NumberFormat("en-US");
-const esc=s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-function fmtN(v){if(v==null||isNaN(v))return"–";const a=Math.abs(v);if(a>=1e6)return(v/1e6).toFixed(a>=1e7?1:2)+"M";if(a>=1e5)return(v/1e3).toFixed(1)+"K";return nfInt.format(Math.round(v));}
-function fmtFull(v){return v==null||isNaN(v)?"–":nfInt.format(Math.round(v));}
-function fmtPct(v,d=1){return v==null||isNaN(v)?"–":v.toFixed(d)+"%";}
-function fmtDate(iso){return iso?new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"—";}
-function fmtDateShort(iso){return iso?new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short"}):"—";}
-function weekdayName(iso){return iso?new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{weekday:"long"}):"—";}
-function shiftDays(iso,n){const d=new Date(iso+"T00:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
-function shiftMonth(ym,n){const[y,m]=ym.split("-").map(Number);const d=new Date(y,m-1+n,1);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;}
-function toISO(raw){if(raw==null||raw==="")return null;const d=new Date(raw);if(isNaN(d))return null;return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
-function deltaPct(cur,prev){if(prev==null||prev===0||cur==null)return null;return((cur-prev)/prev)*100;}
-function scopeDates(all,key){
-  if(!all.length)return{dates:[],prev:[]};
-  const max=all[all.length-1],mo=d=>d.slice(0,7);
-  if(key==="D1"){const i=all.length-1;return{dates:[max],prev:i>0?[all[i-1]]:[]};}
-  if(key==="CM"){const m=mo(max),pm=shiftMonth(m,-1);return{dates:all.filter(d=>mo(d)===m),prev:all.filter(d=>mo(d)===pm)};}
-  if(key==="LM"){const pm=shiftMonth(mo(max),-1),pp=shiftMonth(pm,-1);return{dates:all.filter(d=>mo(d)===pm),prev:all.filter(d=>mo(d)===pp)};}
-  const span=key==="L30"?30:7,from=shiftDays(max,-(span-1)),pTo=shiftDays(from,-1),pFrom=shiftDays(from,-span);
-  return{dates:all.filter(d=>d>=from),prev:all.filter(d=>d>=pFrom&&d<=pTo)};
-}
-function contextDates(all,sc,n=7){if(sc.length>1)return sc;if(!sc.length)return[];const i=all.indexOf(sc[0]);return all.slice(Math.max(0,i-n+1),i+1);}
-function missingDates(dates){if(dates.length<2)return[];const out=[],have=new Set(dates),end=dates[dates.length-1];let cur=dates[0];while(cur<end){if(!have.has(cur))out.push(cur);cur=shiftDays(cur,1);}return out;}
-function detectAnomalies(s){
-  if(!s||s.length<6)return[];const chg=[];
-  for(let i=1;i<s.length;i++){const p=s[i-1].v,c=s[i].v;chg.push(p>0?(c-p)/p:0);}
-  const mean=chg.reduce((a,b)=>a+b,0)/chg.length;
-  const sd=Math.sqrt(chg.reduce((a,b)=>a+(b-mean)**2,0)/chg.length)||1e-9;
-  const out=[];chg.forEach((c,i)=>{const z=(c-mean)/sd;if(Math.abs(z)>=1.8&&Math.abs(c)>=.08)out.push({idx:i+1,date:s[i+1].d,pct:c*100,dir:c>0?"up":"down"});});
-  return out;
-}
-function linReg(s){const n=s?.length||0;if(n<2)return 0;let sx=0,sy=0,sxy=0,sxx=0;s.forEach((p,i)=>{sx+=i;sy+=p.v;sxy+=i*p.v;sxx+=i*i;});return(n*sxy-sx*sy)/(n*sxx-sx*sx||1);}
-function smoothPath(pts){
-  const n=pts.length;if(!n)return"";if(n===1)return`M${pts[0].x},${pts[0].y}`;
-  if(n===2)return`M${pts[0].x},${pts[0].y} L${pts[1].x},${pts[1].y}`;
-  const dx=[],dy=[],m=[];
-  for(let i=0;i<n-1;i++){dx[i]=pts[i+1].x-pts[i].x;dy[i]=pts[i+1].y-pts[i].y;m[i]=dy[i]/(dx[i]||1e-9);}
-  const t=[m[0]];
-  for(let i=1;i<n-1;i++){if(m[i-1]*m[i]<=0)t[i]=0;else{const w1=2*dx[i]+dx[i-1],w2=dx[i]+2*dx[i-1];t[i]=(w1+w2)/(w1/m[i-1]+w2/m[i]);}}
-  t[n-1]=m[n-2];
-  let d=`M${pts[0].x.toFixed(2)},${pts[0].y.toFixed(2)}`;
-  for(let i=0;i<n-1;i++){
-    const c1x=pts[i].x+dx[i]/3,c1y=pts[i].y+t[i]*dx[i]/3,c2x=pts[i+1].x-dx[i]/3,c2y=pts[i+1].y-t[i+1]*dx[i]/3;
-    d+=` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${pts[i+1].x.toFixed(2)},${pts[i+1].y.toFixed(2)}`;
-  }
-  return d;
-}
-let __gid=0;const gid=p=>p+(++__gid);
-function hexToRgba(hex,a){const h=String(hex||"").replace("#","");if(h.length!==6)return`rgba(120,140,200,${a})`;const n=parseInt(h,16);return`rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+/* =========================== UTILITIES ========================== */
+const fmt = n => n?.toLocaleString() || '—';
+const pct = (v,d=1) => v != null ? v.toFixed(d)+'%' : '—';
+const dateFmt = d => d ? new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—';
+const cleanField = n => String(n||'').trim().replace(/^[A-Z]{2,12}\((.*)\)$/,'$1').toUpperCase().trim();
+const idxOf = (cols,n) => cols.findIndex(c => cleanField(c.fieldName) === n);
+const isCard = r => r.group === 'CARD' || r.group === 'QPLUS';
+const isVol = r => r.cat !== 'Declined Card Transactions';
 
-/* ============================== DATA LAYER =============================== */
-function cleanFieldName(name){
-  let n=String(name||"").trim();
-  for(let i=0;i<3;i++){const m=n.match(/^[A-Za-z_]{2,12}\((.*)\)$/);if(!m)break;n=m[1].trim();}
-  return n.replace(/\s*\(copy\)\s*$/i,"").trim().toUpperCase();
-}
-function cleanText(dv){const raw=dv?.value??dv?.formattedValue??"";const s=String(raw).trim();return NULLISH.has(s.toLowerCase())?"":s;}
-const idxOf=(cols,name)=>cols.findIndex(c=>cleanFieldName(c.fieldName)===name.toUpperCase());
-
-async function readWorksheet(){
-  const tb=window.tableau;
-  if(!tb || !tb.extensions) {
-    console.warn('Tableau Extensions not available');
-    return null;
-  }
+/* =========================== DATA LOADER ========================== */
+async function loadData(){
   try {
+    const tb = window.tableau;
+    if(!tb?.extensions) return null;
+    
     await tb.extensions.initializeAsync();
     const dash = tb.extensions.dashboardContent?.dashboard;
-    const ws = dash ? dash.worksheets[0] : tb.extensions.worksheetContent?.worksheet;
+    const ws = dash?.worksheets?.[0] || tb.extensions.worksheetContent?.worksheet;
     if(!ws) return null;
-    const reader = await ws.getSummaryDataReaderAsync(undefined,{ignoreSelection:true});
-    const rows=[];let cols=null;
-    for(let p=0;p<reader.pageCount;p++){const page=await reader.getPageAsync(p);if(!cols)cols=page.columns;page.data.forEach(r=>rows.push(r));}
+    
+    const reader = await ws.getSummaryDataReaderAsync(void 0, { ignoreSelection: true });
+    let cols = null, rows = [];
+    for(let p=0; p<reader.pageCount; p++){
+      const page = await reader.getPageAsync(p);
+      if(!cols) cols = page.columns;
+      page.data.forEach(r => rows.push(r));
+    }
     await reader.releaseAsync();
-    return {cols,rows,wsName:ws.name};
+    return { cols, rows };
   } catch(e) {
-    console.warn('Error reading worksheet:', e);
+    console.warn('Data load error:', e);
     return null;
   }
 }
 
-function shapeData(cols,rows){
-  const missing=REQUIRED_COLS.filter(c=>idxOf(cols,c)<0);
-  if(missing.length)return{error:missing,found:cols.map(c=>c.fieldName)};
-  const ix={};REQUIRED_COLS.forEach(c=>ix[c]=idxOf(cols,c));
-  const recs=[];
-  rows.forEach(r=>{
-    const date=toISO(cleanText(r[ix.TXN_DATE])||r[ix.TXN_DATE]?.value);if(!date)return;
-    const group=cleanText(r[ix.GROUP]).toUpperCase();
-    const cat=cleanText(r[ix.CATEGORY]);
-    const sub=cleanText(r[ix.SUB_CATEGORY]);
-    const ap=Number(r[ix.APPROVED_COUNT]?.value)||0, de=Number(r[ix.DECLINED_COUNT]?.value)||0;
-    if(!group||!cat)return;
-    recs.push({date,group,cat,sub,ap,de,tot:ap+de});
-  });
-  recs.sort((a,b)=>a.date<b.date?-1:1);
-  const dates=[...new Set(recs.map(r=>r.date))].sort();
-  return{recs,dates};
-}
-
-/* =========================== VALIDATION ENGINE ========================== */
-function validateData(cols, rows){
-  const results = {
-    valid: true,
-    errors: [],
-    warnings: [],
-    fieldStatus: {},
-    dataPreview: [],
-    stats: {},
-    hasData: false
-  };
-
-  if(!cols || cols.length === 0){
-    results.valid = false;
-    results.errors.push("No columns found in the data source");
-    results.hasData = false;
-    return results;
-  }
-
-  results.hasData = true;
-
-  REQUIRED_COLS.forEach(req => {
-    const idx = idxOf(cols, req);
-    if(idx === -1){
-      results.fieldStatus[req] = { found: false, index: -1 };
-    } else {
-      const col = cols[idx];
-      const sampleValue = rows.length > 0 ? rows[0][idx]?.value : null;
-      results.fieldStatus[req] = { 
-        found: true, 
-        index: idx, 
-        originalName: col.fieldName,
-        sampleValue: sampleValue,
-        type: typeof sampleValue
-      };
-    }
-  });
-
-  const missingFields = REQUIRED_COLS.filter(c => !results.fieldStatus[c]?.found);
-  if(missingFields.length > 0){
-    results.valid = false;
-    results.errors.push("Missing required fields: " + missingFields.join(', '));
-  }
-
-  if(rows.length === 0){
-    results.valid = false;
-    results.errors.push("No data rows found in the worksheet");
-  }
-
-  // Check data types if we have data
-  if(rows.length > 0 && cols.length > 0){
-    const numericIssues = [];
-    const dateIssues = [];
-    const groupIssues = [];
-    const validGroups = new Set(["CARD", "DIGITAL", "QPLUS"]);
-    const foundGroups = new Set();
-
-    rows.slice(0, 1000).forEach((row, i) => {
-      REQUIRED_COLS.forEach(req => {
-        const info = results.fieldStatus[req];
-        if(!info?.found) return;
-        const idx = info.index;
-        const val = row[idx]?.value;
-        
-        if(req === "APPROVED_COUNT" || req === "DECLINED_COUNT"){
-          if(val !== undefined && val !== null && val !== "" && isNaN(Number(val))){
-            numericIssues.push(`Row ${i+1}, ${req}: "${val}"`);
-          }
-        }
-        if(req === "TXN_DATE"){
-          if(val && isNaN(new Date(val).getTime())){
-            dateIssues.push(`Row ${i+1}: "${val}"`);
-          }
-        }
-        if(req === "GROUP"){
-          const cleaned = cleanText(row[idx]);
-          if(cleaned){
-            const upper = cleaned.toUpperCase();
-            foundGroups.add(upper);
-            if(!validGroups.has(upper)){
-              groupIssues.push(`"${cleaned}"`);
-            }
-          }
-        }
-      });
-    });
-
-    if(numericIssues.length > 0){
-      results.warnings.push(`Numeric fields contain non-numeric values: ${numericIssues.slice(0,3).join('; ')}${numericIssues.length > 3 ? ` (+${numericIssues.length - 3} more)` : ''}`);
-    }
-    if(dateIssues.length > 0){
-      results.warnings.push(`Invalid date formats: ${dateIssues.slice(0,3).join('; ')}${dateIssues.length > 3 ? ` (+${dateIssues.length - 3} more)` : ''}`);
-    }
-    if(groupIssues.length > 0){
-      results.warnings.push(`GROUP contains unexpected values: ${[...new Set(groupIssues)].join(', ')}. Expected: CARD, DIGITAL, or QPLUS`);
-    }
-    if(foundGroups.size === 0 && rows.length > 0){
-      results.warnings.push("GROUP field appears to be empty in all rows");
-    }
-
-    results.stats.groups = [...foundGroups];
-    
-    // Build data preview
-    const previewCols = REQUIRED_COLS.filter(c => results.fieldStatus[c]?.found);
-    previewCols.forEach(c => {
-      const idx = results.fieldStatus[c].index;
-      results.dataPreview.push({
-        name: c,
-        originalName: cols[idx]?.fieldName || c,
-        samples: rows.slice(0, 5).map(row => {
-          const val = row[idx]?.value;
-          return val !== undefined && val !== null ? String(val) : "(empty)";
-        })
-      });
-    });
-  }
-
-  results.stats.totalRows = rows.length;
-  results.stats.totalCols = cols.length;
-  results.stats.foundFields = REQUIRED_COLS.filter(c => results.fieldStatus[c]?.found);
-  results.stats.missingFields = missingFields;
-  results.stats.allFields = cols.map(c => c.fieldName);
-
-  return results;
-}
-
-/* =========================== GLOBAL STATE ========================== */
-const S = {
-  tab: 'summary',
-  scope: 'L7',
-  theme: 'light',
-  navOpen: true,
-  cards: { cats: [...CARD_CATS] },
-  digital: { sel: DIGITAL_CATS.slice(0, 3) },
-  donut: { path: [], sel: null },
-  mMode: 'all',
-  compare: { customDates: false, customCats: false, showSubs: false, chartType: 'bar', selDates: [], selCats: ['CARDS_ALL', 'DIGITAL_ALL'], from: '', to: '' },
-  dayvs: { a: null, b: null },
-  table: { group: 'ALL', q: '', sortK: 'tot', sortDir: -1 },
-  data: null,
-  ready: false,
-  validationResult: null,
-  cols: null,
-  rows: null,
-  shapedData: null
-};
-
-/* =========================== CHIP HELPER ========================== */
-function chip(label, opts = {}) {
-  const classes = ['chip'];
-  if(opts.small !== false) classes.push('sm');
-  if(opts.on) classes.push('on');
-  if(opts.act) classes.push('click');
-  if(opts.tone) classes.push(opts.tone);
-  return `<span class="${classes.join(' ')}" ${opts.act ? `data-act="${opts.act}"` : ''} ${opts.arg ? `data-arg="${opts.arg}"` : ''}>${label}</span>`;
-}
-
-/* =========================== TAB FUNCTIONS ========================== */
-function tabSummary(){
-  const vr = S.validationResult || {};
-  const hasData = vr.hasData && S.shapedData && S.shapedData.recs && S.shapedData.recs.length > 0;
+/* =========================== VALIDATION ========================== */
+function validate(cols, rows){
+  const result = { valid: true, errors: [], warnings: [], fields: {} };
   
-  if(!hasData){
-    return `
-      <div class="stack">
-        <div class="card">
-          <h3>📊 No Data Available</h3>
-          <p style="color:var(--sub);">Please connect a data source with the required fields.</p>
-          <div style="margin-top:12px;padding:12px;background:var(--surface2);border-radius:8px;">
-            <div style="font-weight:600;margin-bottom:8px;">Required Fields:</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              ${REQUIRED_COLS.map(f => `<span class="chip">${f}</span>`).join('')}
+  REQUIRED_FIELDS.forEach(f => {
+    const idx = idxOf(cols, f);
+    result.fields[f] = { found: idx >= 0, name: idx >= 0 ? cols[idx].fieldName : null };
+    if(idx < 0) result.errors.push(`Missing field: ${f}`);
+  });
+  
+  if(!rows?.length) result.errors.push('No data rows found');
+  else {
+    // Check for required values
+    const groups = new Set();
+    let hasDate = false;
+    rows.slice(0, 100).forEach((r,i) => {
+      REQUIRED_FIELDS.forEach(f => {
+        const idx = idxOf(cols, f);
+        if(idx < 0) return;
+        const val = r[idx]?.value;
+        if(f === 'GROUP' && val) groups.add(String(val).toUpperCase());
+        if(f === 'TXN_DATE' && val) hasDate = true;
+      });
+    });
+    if(!hasDate && rows.length) result.warnings.push('No valid dates found in TXN_DATE');
+    if(groups.size) {
+      const valid = ['CARD','DIGITAL','QPLUS'];
+      const invalid = [...groups].filter(g => !valid.includes(g));
+      if(invalid.length) result.warnings.push(`Unexpected GROUP values: ${invalid.join(', ')}`);
+    }
+  }
+  
+  result.valid = result.errors.length === 0;
+  result.hasData = rows?.length > 0;
+  return result;
+}
+
+/* =========================== DATA PROCESSOR ========================== */
+function processData(cols, rows){
+  const ix = {};
+  REQUIRED_FIELDS.forEach(f => ix[f] = idxOf(cols, f));
+  if(REQUIRED_FIELDS.some(f => ix[f] < 0)) return null;
+  
+  const recs = [];
+  rows.forEach(r => {
+    const date = r[ix.TXN_DATE]?.value;
+    if(!date || isNaN(new Date(date).getTime())) return;
+    const group = String(r[ix.GROUP]?.value || '').toUpperCase().trim();
+    const cat = String(r[ix.CATEGORY]?.value || '').trim();
+    if(!group || !cat) return;
+    const ap = Number(r[ix.APPROVED_COUNT]?.value) || 0;
+    const de = Number(r[ix.DECLINED_COUNT]?.value) || 0;
+    recs.push({
+      date: new Date(date).toISOString().slice(0,10),
+      group, cat,
+      sub: String(r[ix.SUB_CATEGORY]?.value || '').trim(),
+      ap, de, tot: ap + de
+    });
+  });
+  recs.sort((a,b) => a.date.localeCompare(b.date));
+  const dates = [...new Set(recs.map(r => r.date))].sort();
+  return { recs, dates };
+}
+
+/* =========================== DASHBOARD RENDERER ========================== */
+function renderDashboard(){
+  const root = document.getElementById('root');
+  const { tab, data, validation, cols, rows } = State;
+  const hasData = data && data.recs && data.recs.length > 0;
+  const valid = validation?.valid !== false;
+  const errors = validation?.errors || [];
+  const warnings = validation?.warnings || [];
+  
+  // Scope dates
+  let scopeDates = [], prevDates = [];
+  if(hasData){
+    const all = data.dates;
+    const max = all[all.length-1];
+    const scope = SCOPES.find(s => s.key === State.scope) || SCOPES[1];
+    if(scope.key === 'D1'){ scopeDates = [max]; prevDates = all.length > 1 ? [all[all.length-2]] : []; }
+    else if(scope.key === 'L7'){ 
+      const from = max ? new Date(new Date(max).getTime() - 6*86400000).toISOString().slice(0,10) : '';
+      scopeDates = all.filter(d => d >= from);
+      const pTo = from ? new Date(new Date(from).getTime() - 86400000).toISOString().slice(0,10) : '';
+      const pFrom = from ? new Date(new Date(from).getTime() - 7*86400000).toISOString().slice(0,10) : '';
+      prevDates = all.filter(d => d >= pFrom && d < (pTo || ''));
+    }
+    else if(scope.key === 'L30'){
+      const from = max ? new Date(new Date(max).getTime() - 29*86400000).toISOString().slice(0,10) : '';
+      scopeDates = all.filter(d => d >= from);
+      const pTo = from ? new Date(new Date(from).getTime() - 86400000).toISOString().slice(0,10) : '';
+      const pFrom = from ? new Date(new Date(from).getTime() - 30*86400000).toISOString().slice(0,10) : '';
+      prevDates = all.filter(d => d >= pFrom && d < (pTo || ''));
+    }
+    else if(scope.key === 'CM'){
+      const m = max?.slice(0,7) || '';
+      scopeDates = all.filter(d => d.startsWith(m));
+      const pm = m ? new Date(new Date(m+'-01').getTime() - 86400000).toISOString().slice(0,7) : '';
+      prevDates = all.filter(d => d.startsWith(pm));
+    }
+  }
+  
+  // Filter records
+  const scopeRecs = hasData ? data.recs.filter(r => scopeDates.includes(r.date)) : [];
+  const prevRecs = hasData ? data.recs.filter(r => prevDates.includes(r.date)) : [];
+  
+  // Calculations
+  const total = scopeRecs.reduce((s,r) => s + r.tot, 0);
+  const prevTotal = prevRecs.reduce((s,r) => s + r.tot, 0);
+  const chg = prevTotal ? (total - prevTotal) / prevTotal * 100 : null;
+  
+  const cardTot = scopeRecs.filter(r => isCard(r) && isVol(r)).reduce((s,r) => s + r.tot, 0);
+  const digTot = scopeRecs.filter(r => r.group === 'DIGITAL').reduce((s,r) => s + r.tot, 0);
+  
+  const cardAppr = (() => {
+    let a=0,d=0;
+    scopeRecs.forEach(r => { if(isCard(r)){ if(isVol(r)) a+=r.ap; d+=r.de; }});
+    return a+d > 0 ? a/(a+d)*100 : null;
+  })();
+  
+  const decl = scopeRecs.filter(r => isCard(r)).reduce((s,r) => s + r.de, 0);
+  
+  // Build HTML
+  const navHtml = NAV_ITEMS.map(n => `
+    <button class="nav-item ${tab === n.id ? 'active' : ''}" data-tab="${n.id}">
+      <span class="icon">${n.icon}</span>
+      <span class="label">${n.label}</span>
+    </button>
+  `).join('');
+
+  const scopeHtml = SCOPES.map(s => `
+    <button class="scope-btn ${State.scope === s.key ? 'active' : ''}" data-scope="${s.key}">${s.label}</button>
+  `).join('');
+
+  const statusClass = valid && hasData ? 'online' : errors.length ? 'offline' : 'warning';
+  const statusDot = valid && hasData ? 'green' : errors.length ? 'red' : 'yellow';
+  const statusText = valid && hasData ? 'Live' : errors.length ? 'Error' : 'No Data';
+
+  let contentHtml = '';
+  
+  if(!hasData || errors.length){
+    contentHtml = `
+      <div class="empty-state">
+        <div class="icon">${errors.length ? '🔍' : '📊'}</div>
+        <h3>${errors.length ? 'Data Validation Issues' : 'No Data Available'}</h3>
+        <p>${errors.length ? errors.join('<br>') : 'Connect a Tableau worksheet with the required fields.'}</p>
+        <div class="fields-grid">
+          ${REQUIRED_FIELDS.map(f => `<span class="tag">${f}</span>`).join('')}
+        </div>
+        ${warnings.length ? `<p style="margin-top:12px;color:var(--warning);font-size:13px;">⚠️ ${warnings.join('; ')}</p>` : ''}
+        <button onclick="location.reload()" style="margin-top:20px;padding:10px 28px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-family:var(--font);">Retry</button>
+      </div>
+    `;
+  } else {
+    // Build main content
+    const metrics = [
+      { label:'Total Transactions', value:fmt(total), change:chg, sub:`${scopeDates.length} days` },
+      { label:'Card Volume', value:fmt(cardTot), change:prevTotal ? (cardTot - prevRecs.filter(r=>isCard(r)&&isVol(r)).reduce((s,r)=>s+r.tot,0)) / (prevRecs.filter(r=>isCard(r)&&isVol(r)).reduce((s,r)=>s+r.tot,0)||1) * 100 : null },
+      { label:'Digital Volume', value:fmt(digTot), change:prevTotal ? (digTot - prevRecs.filter(r=>r.group==='DIGITAL').reduce((s,r)=>s+r.tot,0)) / (prevRecs.filter(r=>r.group==='DIGITAL').reduce((s,r)=>s+r.tot,0)||1) * 100 : null },
+      { label:'Approval Rate', value:pct(cardAppr), sub:`${fmt(decl)} declined` }
+    ];
+
+    const metricHtml = metrics.map(m => `
+      <div class="metric">
+        <div class="label">${m.label}</div>
+        <div class="value">${m.value}</div>
+        ${m.change != null ? `<span class="change ${m.change >= 0 ? 'up' : 'down'}">${m.change >= 0 ? '↑' : '↓'} ${Math.abs(m.change).toFixed(1)}%</span>` : ''}
+        ${m.sub ? `<div class="sub">${m.sub}</div>` : ''}
+      </div>
+    `).join('');
+
+    // Top categories
+    const catMap = {};
+    scopeRecs.forEach(r => { 
+      if(isVol(r)){ catMap[r.cat] = (catMap[r.cat]||0) + r.tot; }
+    });
+    const topCats = Object.entries(catMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const maxCat = topCats.length ? topCats[0][1] : 1;
+
+    const catRows = topCats.map(([name,val]) => `
+      <tr>
+        <td>${name}</td>
+        <td class="mono" style="text-align:right;">${fmt(val)}</td>
+        <td style="width:120px;">
+          <div style="height:6px;background:var(--bg-tertiary);border-radius:4px;overflow:hidden;">
+            <div style="height:100%;width:${(val/maxCat*100).toFixed(1)}%;background:linear-gradient(90deg,var(--accent),#6c8cff);border-radius:4px;"></div>
+          </div>
+        </td>
+        <td style="text-align:right;color:var(--text-muted);font-size:12px;">${(val/total*100).toFixed(1)}%</td>
+      </tr>
+    `).join('');
+
+    const tabContent = {
+      overview: `
+        <div class="grid-2">${metricHtml}</div>
+        <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card">
+            <div class="card-header"><h3>Top Categories</h3><span class="sub">by volume</span></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Category</th><th style="text-align:right;">Volume</th><th></th><th style="text-align:right;">Share</th></tr></thead>
+                <tbody>${catRows || '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">No data</td></tr>'}</tbody>
+              </table>
             </div>
           </div>
-          <button class="retry-btn" style="margin-top:16px;background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:10px;font-weight:600;cursor:pointer;" onclick="window.location.reload()">🔄 Reload Data</button>
-        </div>
-      </div>
-    `;
-  }
-
-  const data = S.shapedData;
-  const allDates = data.dates;
-  const allRecs = data.recs;
-  const sc = scopeDates(allDates, S.scope);
-  const scDates = sc.dates;
-  const prevDates = sc.prev;
-  const prevRecs = allRecs.filter(r => prevDates.includes(r.date));
-  const recs = allRecs.filter(r => scDates.includes(r.date));
-  const ctxDates = contextDates(allDates, scDates);
-
-  return `
-    <div class="stack">
-      <div class="row">
-        <div class="card" style="flex:1;">
-          <h3>✅ Data Loaded Successfully</h3>
-          <div class="grid-auto" style="margin-top:12px;">
-            <div class="tile"><div style="font-weight:600;color:var(--sub);font-size:11px;">Total Rows</div><div style="font-size:24px;font-weight:700;">${fmtFull(allRecs.length)}</div></div>
-            <div class="tile"><div style="font-weight:600;color:var(--sub);font-size:11px;">Date Range</div><div style="font-size:18px;font-weight:700;">${allDates.length > 0 ? fmtDate(allDates[0]) + ' → ' + fmtDate(allDates[allDates.length-1]) : '—'}</div></div>
-            <div class="tile"><div style="font-weight:600;color:var(--sub);font-size:11px;">Current Scope</div><div style="font-size:18px;font-weight:700;">${scDates.length} days</div></div>
-            <div class="tile"><div style="font-weight:600;color:var(--sub);font-size:11px;">Categories</div><div style="font-size:18px;font-weight:700;">${new Set(allRecs.map(r => r.cat)).size}</div></div>
+          <div class="card">
+            <div class="card-header"><h3>Data Health</h3><span class="sub">validation summary</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div><div class="text-muted" style="font-size:11px;">Total Rows</div><div class="font-mono" style="font-size:20px;font-weight:700;">${fmt(data.recs.length)}</div></div>
+              <div><div class="text-muted" style="font-size:11px;">Date Range</div><div style="font-size:14px;font-weight:600;">${data.dates.length ? dateFmt(data.dates[0]) + ' → ' + dateFmt(data.dates[data.dates.length-1]) : '—'}</div></div>
+              <div><div class="text-muted" style="font-size:11px;">Categories</div><div class="font-mono" style="font-size:20px;font-weight:700;">${Object.keys(catMap).length}</div></div>
+              <div><div class="text-muted" style="font-size:11px;">Days in Scope</div><div class="font-mono" style="font-size:20px;font-weight:700;">${scopeDates.length}</div></div>
+            </div>
+            ${warnings.length ? `<div style="margin-top:12px;padding:10px 14px;background:#fffbeb;border-radius:8px;font-size:12px;color:var(--warning);">⚠️ ${warnings.join('; ')}</div>` : ''}
           </div>
-          ${S.validationResult?.warnings?.length > 0 ? `<div class="warning-box" style="margin-top:12px;">${S.validationResult.warnings.map(w => '⚠️ ' + w).join('<br>')}</div>` : ''}
         </div>
-      </div>
-      <div class="card">
-        <h3>📈 Quick Overview</h3>
-        <p style="color:var(--sub);">Navigate to other tabs for detailed analytics.</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
-          ${NAV.filter(n => n.id !== 'summary' && n.id !== 'settings').map(n => 
-            `<button class="chip click" data-act="navTo" data-arg="${n.id}">${n.label}</button>`
-          ).join('')}
+      `,
+      cards: `
+        <div class="card">
+          <div class="card-header"><h3>💳 Card Transactions</h3><span class="sub">${scopeDates.length} days</span></div>
+          <div class="grid-3" style="margin-bottom:16px;">
+            <div class="metric"><div class="label">Card Volume</div><div class="value">${fmt(cardTot)}</div></div>
+            <div class="metric"><div class="label">Approval Rate</div><div class="value">${pct(cardAppr)}</div></div>
+            <div class="metric"><div class="label">Declined</div><div class="value" style="color:var(--danger);">${fmt(decl)}</div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Category</th><th style="text-align:right;">Approved</th><th style="text-align:right;">Declined</th><th style="text-align:right;">Total</th><th style="text-align:right;">Rate</th></tr></thead>
+              <tbody>
+                ${scopeRecs.filter(r => isCard(r) && isVol(r)).reduce((acc,r) => {
+                  const key = r.cat;
+                  if(!acc[key]) acc[key] = { ap:0, de:0, tot:0 };
+                  acc[key].ap += r.ap; acc[key].de += r.de; acc[key].tot += r.tot;
+                  return acc;
+                }, {}) |> Object.entries($).map(([name,stats]) => `
+                  <tr>
+                    <td>${name}</td>
+                    <td class="mono" style="text-align:right;">${fmt(stats.ap)}</td>
+                    <td class="mono" style="text-align:right;color:var(--danger);">${fmt(stats.de)}</td>
+                    <td class="mono" style="text-align:right;font-weight:600;">${fmt(stats.tot)}</td>
+                    <td style="text-align:right;">${stats.tot ? pct(stats.ap/stats.tot*100) : '—'}</td>
+                  </tr>
+                `).join('') || '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No card data</td></tr>'}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-    </div>
-  `;
-}
-
-function tabSettings(){
-  const vr = S.validationResult || {};
-  const stats = vr.stats || {};
-  const status = vr.fieldStatus || {};
-  const hasData = vr.hasData;
-  
-  let fieldStatusHtml = REQUIRED_COLS.map(field => {
-    const info = status[field] || { found: false };
-    const isFound = info.found;
-    return `
-      <div class="field-item">
-        <span class="status-icon">${isFound ? '✅' : '❌'}</span>
-        <span class="field-name">${field}</span>
-        <span class="field-status ${isFound ? 'found' : 'missing'}">${isFound ? 'Found ✓' : 'Missing ✗'}</span>
-        <span class="field-detail">${isFound ? (info.originalName || field) : 'Not found'}</span>
-        ${isFound && info.sampleValue !== undefined ? `<span style="color:var(--sub);font-size:11px;margin-left:auto;">sample: ${String(info.sampleValue).substring(0, 30)}</span>` : ''}
-      </div>
-    `;
-  }).join('');
-
-  let previewHtml = '';
-  if(vr.dataPreview && vr.dataPreview.length > 0){
-    previewHtml = `
-      <div class="data-preview">
-        <div style="font:700 11px Sora,sans-serif;letter-spacing:1.2px;color:var(--sub);text-transform:uppercase;margin-bottom:10px;">
-          📊 Data Preview (first 3 rows)
+      `,
+      digital: `
+        <div class="card">
+          <div class="card-header"><h3>📱 Digital Transactions</h3><span class="sub">${scopeDates.length} days</span></div>
+          <div class="grid-3" style="margin-bottom:16px;">
+            <div class="metric"><div class="label">Digital Volume</div><div class="value">${fmt(digTot)}</div></div>
+            <div class="metric"><div class="label">Share of Total</div><div class="value">${total ? pct(digTot/total*100) : '—'}</div></div>
+            <div class="metric"><div class="label">Daily Avg</div><div class="value">${scopeDates.length ? fmt(digTot/scopeDates.length) : '—'}</div></div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Channel</th><th style="text-align:right;">Volume</th><th style="text-align:right;">Share</th></tr></thead>
+              <tbody>
+                ${scopeRecs.filter(r => r.group === 'DIGITAL').reduce((acc,r) => {
+                  acc[r.cat] = (acc[r.cat]||0) + r.tot;
+                  return acc;
+                }, {}) |> Object.entries($).sort((a,b)=>b[1]-a[1]).map(([name,val]) => `
+                  <tr>
+                    <td>${name}</td>
+                    <td class="mono" style="text-align:right;">${fmt(val)}</td>
+                    <td style="text-align:right;">${digTot ? pct(val/digTot*100) : '—'}</td>
+                  </tr>
+                `).join('') || '<tr><td colspan="3" style="text-align:center;color:var(--text-muted);">No digital data</td></tr>'}
+              </tbody>
+            </table>
+          </div>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Field</th>
-              ${vr.dataPreview[0]?.samples.map((_, i) => `<th>Row ${i + 1}</th>`).join('') || ''}
-            </tr>
-          </thead>
-          <tbody>
-            ${vr.dataPreview.map(col => `
-              <tr>
-                <td style="font-weight:600;color:var(--text);">${col.name}</td>
-                ${col.samples.map(sample => `
-                  <td class="${sample === '(empty)' ? 'empty' : ''}">${sample}</td>
+      `,
+      comparison: `
+        <div class="card">
+          <div class="card-header"><h3>📈 Period Comparison</h3><span class="sub">current vs previous period</span></div>
+          <div class="grid-3">
+            <div class="metric"><div class="label">Current Period</div><div class="value">${fmt(total)}</div><div class="sub">${scopeDates.length} days</div></div>
+            <div class="metric"><div class="label">Previous Period</div><div class="value">${fmt(prevTotal)}</div><div class="sub">${prevDates.length} days</div></div>
+            <div class="metric"><div class="label">Change</div><div class="value" style="color:${chg >= 0 ? 'var(--success)' : 'var(--danger)'};">${chg != null ? (chg >= 0 ? '↑' : '↓') + ' ' + Math.abs(chg).toFixed(1) + '%' : '—'}</div></div>
+          </div>
+        </div>
+      `,
+      dayvs: `
+        <div class="card">
+          <div class="card-header"><h3>⚖️ Day vs Day</h3><span class="sub">compare any two days</span></div>
+          <div style="color:var(--text-secondary);padding:20px;text-align:center;">
+            <p>Select two dates to compare transaction volumes side by side.</p>
+            <div style="display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap;">
+              ${data.dates.slice(-14).map(d => `
+                <button class="scope-btn" style="padding:6px 12px;background:var(--bg-tertiary);border:1px solid var(--border-light);border-radius:6px;cursor:pointer;font-size:12px;" data-day="${d}">${dateFmt(d)}</button>
+              `).join('')}
+            </div>
+            <p style="margin-top:12px;font-size:13px;">Click two dates to compare. Feature coming soon.</p>
+          </div>
+        </div>
+      `,
+      data: `
+        <div class="card">
+          <div class="card-header"><h3>📋 Raw Data</h3><span class="sub">${data.recs.length} rows</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Group</th><th>Category</th><th>Sub-Category</th><th style="text-align:right;">Approved</th><th style="text-align:right;">Declined</th><th style="text-align:right;">Total</th></tr></thead>
+              <tbody>
+                ${data.recs.slice(0, 50).map(r => `
+                  <tr>
+                    <td>${dateFmt(r.date)}</td>
+                    <td><span class="badge ${r.group === 'CARD' ? 'info' : r.group === 'DIGITAL' ? 'success' : 'warning'}">${r.group}</span></td>
+                    <td>${r.cat}</td>
+                    <td style="color:var(--text-muted);">${r.sub || '—'}</td>
+                    <td class="mono" style="text-align:right;">${fmt(r.ap)}</td>
+                    <td class="mono" style="text-align:right;color:var(--danger);">${fmt(r.de)}</td>
+                    <td class="mono" style="text-align:right;font-weight:600;">${fmt(r.tot)}</td>
+                  </tr>
                 `).join('')}
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  let allFieldsHtml = '';
-  if(stats.allFields && stats.allFields.length > 0){
-    allFieldsHtml = stats.allFields.map(f => 
-      `<span style="display:inline-block;background:var(--surface);padding:2px 10px;border-radius:4px;margin:2px;font-size:11px;font-family:'JetBrains Mono',monospace;">${f}</span>`
-    ).join('');
-  }
-
-  return `
-    <div class="stack">
-      <div class="card">
-        <h3>⚙️ Data Validation Report</h3>
-        <div style="margin:12px 0;padding:12px;background:var(--surface2);border-radius:8px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div><strong>Status:</strong> ${vr.valid ? '✅ Valid' : '❌ Invalid'}</div>
-            <div><strong>Data Available:</strong> ${hasData ? '✅ Yes' : '❌ No'}</div>
-            <div><strong>Total Rows:</strong> ${stats.totalRows || 0}</div>
-            <div><strong>Total Columns:</strong> ${stats.totalCols || 0}</div>
-            <div><strong>Fields Found:</strong> ${stats.foundFields?.length || 0}/${REQUIRED_COLS.length}</div>
-            <div><strong>Fields Missing:</strong> ${stats.missingFields?.length || 0}</div>
+                ${data.recs.length > 50 ? `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);">+ ${data.recs.length - 50} more rows</td></tr>` : ''}
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
-      
-      <div class="card">
-        <h3>📋 Field Status</h3>
-        <div class="field-list">
-          ${fieldStatusHtml}
-        </div>
-      </div>
-      
-      ${vr.errors && vr.errors.length > 0 ? `
-        <div class="card" style="border-color:var(--error);">
-          <h3 style="color:var(--error);">❌ Errors (${vr.errors.length})</h3>
-          ${vr.errors.map(e => `<div style="padding:4px 0;color:#c62828;">• ${e}</div>`).join('')}
-        </div>
-      ` : ''}
-      
-      ${vr.warnings && vr.warnings.length > 0 ? `
-        <div class="card" style="border-color:var(--warn);">
-          <h3 style="color:var(--warn);">⚠️ Warnings (${vr.warnings.length})</h3>
-          ${vr.warnings.map(w => `<div style="padding:4px 0;color:#e65100;">• ${w}</div>`).join('')}
-        </div>
-      ` : ''}
-      
-      <div class="card">
-        <h3>📁 All Fields in Data</h3>
-        <div style="margin-top:8px;">
-          ${allFieldsHtml || '<span style="color:var(--sub);">No fields detected</span>'}
-        </div>
-      </div>
-      
-      ${previewHtml}
-      
-      <div class="card">
-        <h3>🎨 Theme</h3>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          ${THEME_KEYS.map(k => `
-            <button class="chip click ${S.theme === k ? 'on' : ''}" data-act="theme" data-arg="${k}">${THEMES[k].label}</button>
-          `).join('')}
-        </div>
-      </div>
-      
-      <div class="card">
-        <h3>🔄 Actions</h3>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
-          <button class="retry-btn" onclick="window.location.reload()" style="background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:10px;font-weight:600;cursor:pointer;">🔄 Reload Data</button>
-          ${vr.valid && hasData ? `
-            <button class="retry-btn" onclick="S.tab='summary';renderTab('summary');" style="background:var(--good);color:#fff;border:none;padding:10px 24px;border-radius:10px;font-weight:600;cursor:pointer;">📊 Go to Summary</button>
-          ` : ''}
-        </div>
-      </div>
-    </div>
-  `;
-}
+      `
+    };
 
-// Stub functions for other tabs
-function tabCards(){ return `<div class="card"><h3>💳 Cards Dashboard</h3><p style="color:var(--sub);">Card transaction analytics will appear here when data is loaded.</p></div>`; }
-function tabDigital(){ return `<div class="card"><h3>📱 Digital Dashboard</h3><p style="color:var(--sub);">Digital transaction analytics will appear here when data is loaded.</p></div>`; }
-function tabCompare(){ return `<div class="card"><h3>📈 Compare Dashboard</h3><p style="color:var(--sub);">Comparison analytics will appear here when data is loaded.</p></div>`; }
-function tabDayVs(){ return `<div class="card"><h3>⚖️ Day vs Day Dashboard</h3><p style="color:var(--sub);">Day comparison analytics will appear here when data is loaded.</p></div>`; }
-function tabTable(){ return `<div class="card"><h3>📋 Table View</h3><p style="color:var(--sub);">Raw data view will appear here when data is loaded.</p></div>`; }
-
-/* =========================== RENDER FUNCTIONS ========================== */
-function renderTab(tabId){
-  // Update nav buttons
-  document.querySelectorAll('[data-nav]').forEach(btn => {
-    btn.classList.toggle('on', btn.dataset.nav === tabId);
-  });
-  
-  // Update title
-  const title = document.getElementById('pageTitle');
-  if(title) title.textContent = NAV.find(n => n.id === tabId)?.label || 'Summary';
-  
-  // Render content
-  const content = document.getElementById('tabContent');
-  if(!content) return;
-  
-  switch(tabId){
-    case 'summary': content.innerHTML = tabSummary(); break;
-    case 'cards': content.innerHTML = tabCards(); break;
-    case 'digital': content.innerHTML = tabDigital(); break;
-    case 'compare': content.innerHTML = tabCompare(); break;
-    case 'dayvs': content.innerHTML = tabDayVs(); break;
-    case 'table': content.innerHTML = tabTable(); break;
-    case 'settings': content.innerHTML = tabSettings(); break;
-    default: content.innerHTML = tabSummary();
-  }
-  
-  // Re-attach event listeners for new content
-  document.querySelectorAll('.chip.click[data-act]').forEach(chip => {
-    chip.addEventListener('click', (e) => {
-      const act = chip.dataset.act;
-      const arg = chip.dataset.arg;
-      handleAction(act, arg, chip);
-    });
-  });
-
-  // Attach navTo actions
-  document.querySelectorAll('[data-act="navTo"]').forEach(el => {
-    el.addEventListener('click', () => {
-      const tab = el.dataset.arg;
-      if(tab){
-        S.tab = tab;
-        renderTab(tab);
-      }
-    });
-  });
-}
-
-function handleAction(act, arg, element){
-  switch(act){
-    case 'theme':
-      S.theme = arg;
-      applyTheme(arg);
-      renderTab(S.tab);
-      break;
-    case 'scope':
-      S.scope = arg;
-      renderTab(S.tab);
-      break;
-    default:
-      console.log('Unhandled action:', act, arg);
-  }
-}
-
-function applyTheme(themeKey){
-  const t = THEMES[themeKey];
-  if(!t) return;
-  const root = document.documentElement;
-  Object.keys(t).forEach(key => {
-    root.style.setProperty('--' + key, t[key]);
-  });
-  S.theme = themeKey;
-}
-
-/* =========================== LOAD DASHBOARD ========================== */
-function loadDashboard(cols, rows, validationResult){
-  S.cols = cols;
-  S.rows = rows;
-  S.validationResult = validationResult;
-  
-  // Shape the data if valid
-  if(validationResult.valid && rows && rows.length > 0){
-    const shaped = shapeData(cols, rows);
-    if(!shaped.error){
-      S.shapedData = shaped;
-      S.ready = true;
-    } else {
-      S.shapedData = null;
-      S.ready = false;
-    }
-  } else {
-    S.shapedData = null;
-    S.ready = false;
+    contentHtml = tabContent[tab] || tabContent.overview;
   }
 
-  const root = document.getElementById('root');
-  const hasErrors = validationResult.errors && validationResult.errors.length > 0;
-  const hasWarnings = validationResult.warnings && validationResult.warnings.length > 0;
-  const hasData = validationResult.hasData && S.shapedData && S.shapedData.recs && S.shapedData.recs.length > 0;
-
-  let statusIcon = hasData ? '✅' : '⚠️';
-  let statusText = hasData ? 'Data Loaded' : 'No Data';
-  let statusColor = hasData ? 'var(--good)' : 'var(--warn)';
-
-  if(hasErrors){
-    statusIcon = '❌';
-    statusText = 'Validation Failed';
-    statusColor = 'var(--error)';
-  }
-
-  // Build the dashboard HTML
   root.innerHTML = `
     <div class="app">
-      <div class="rail" id="rail">
+      <aside class="sidebar" id="sidebar">
         <div class="brand">
-          <div style="width:28px;height:28px;border-radius:8px;background:var(--heroGrad);display:grid;place-items:center;color:#fff;font:700 13px Sora,sans-serif;flex-shrink:0">CB</div>
-          <div class="brand-txt"><b>Commercial Bank</b><span>Transaction Analytics</span></div>
+          <div class="brand-icon">CB</div>
+          <div class="brand-text">
+            <h1>Commercial Bank</h1>
+            <p>Transaction Intelligence</p>
+          </div>
         </div>
-        ${NAV.map(n => `
-          <button class="nav-btn ${S.tab === n.id ? 'on' : ''}" data-nav="${n.id}">
-            <span>${n.id === 'summary' ? '📊' : n.id === 'cards' ? '💳' : n.id === 'digital' ? '📱' : n.id === 'compare' ? '📈' : n.id === 'dayvs' ? '⚖️' : n.id === 'table' ? '📋' : '⚙️'}</span>
-            <span class="nav-lbl">${n.label}</span>
-          </button>
-        `).join('')}
-        <div class="spacer"></div>
-        <button class="nav-btn boxed" data-act="toggleNav">
-          <span>${S.navOpen ? '◀' : '▶'}</span>
-          <span class="nav-lbl">${S.navOpen ? 'Collapse' : 'Expand'}</span>
-        </button>
-      </div>
-      <div class="mainwrap">
-        <main id="mainContent">
-          <header class="top">
-            <div>
-              <div class="eyebrow">COMMERCIAL BANK OF CEYLON PLC</div>
-              <h1 class="title" id="pageTitle">${NAV.find(n => n.id === S.tab)?.label || 'Summary'}</h1>
-            </div>
-            <div class="scopebar">
-              <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:12px;background:${statusColor}22;color:${statusColor};font-weight:600;font-size:12px;">
-                ${statusIcon} ${statusText}
-              </span>
-              ${SCOPES.map(s => chip(s.label, { on: S.scope === s.key, act: 'scope', arg: s.key })).join('')}
-              <span class="scopeinfo">${S.shapedData?.dates?.length || 0} days</span>
-            </div>
-          </header>
-          <div id="tabContent">${tabSummary()}</div>
-        </main>
-        <footer>
-          <span class="brandline"><span class="dot" style="background:${hasData ? 'var(--good)' : 'var(--warn)'}"></span> ${hasData ? 'Live' : 'Waiting for data'} · ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-          <span class="sep">|</span>
-          <span>${hasData ? fmtFull(S.shapedData?.recs?.length || 0) + ' transactions' : 'No data loaded'}</span>
-          <span class="right">
-            <span>Theme: ${THEMES[S.theme]?.label || 'Light'}</span>
-            ${hasWarnings ? `<span class="chip warnc" style="cursor:pointer" data-act="gotoSettings">⚠️ ${validationResult.warnings.length} warnings</span>` : ''}
-            ${hasErrors ? `<span class="chip bad" style="cursor:pointer" data-act="gotoSettings">❌ ${validationResult.errors.length} errors</span>` : ''}
-          </span>
-        </footer>
-      </div>
+        <nav class="nav-list">${navHtml}</nav>
+        <div class="sidebar-footer">
+          <div style="font-size:11px;color:var(--text-muted);padding:8px 12px;">
+            <span class="status-dot ${statusDot}"></span> ${statusText}
+          </div>
+        </div>
+      </aside>
+      <main class="main">
+        <header class="header">
+          <div class="header-left">
+            <h2>${NAV_ITEMS.find(n=>n.id===tab)?.label || 'Overview'}</h2>
+            <p>${hasData ? `${data.recs.length} transactions · ${data.dates.length} days` : 'No data loaded'}</p>
+          </div>
+          <div class="header-right">
+            <div class="scope-group">${scopeHtml}</div>
+            <span class="status-badge ${statusClass}">
+              <span class="status-dot ${statusDot}"></span>
+              ${statusText}
+            </span>
+          </div>
+        </header>
+        <div class="content">${contentHtml}</div>
+      </main>
     </div>
   `;
 
-  // Attach event listeners
-  document.querySelectorAll('[data-nav]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      S.tab = btn.dataset.nav;
-      renderTab(S.tab);
+  // Event listeners
+  document.querySelectorAll('[data-tab]').forEach(el => {
+    el.addEventListener('click', () => {
+      State.tab = el.dataset.tab;
+      renderDashboard();
     });
   });
 
-  document.querySelectorAll('[data-act="scope"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      S.scope = btn.dataset.arg;
-      renderTab(S.tab);
+  document.querySelectorAll('[data-scope]').forEach(el => {
+    el.addEventListener('click', () => {
+      State.scope = el.dataset.scope;
+      renderDashboard();
     });
   });
 
-  document.querySelector('[data-act="toggleNav"]')?.addEventListener('click', () => {
-    S.navOpen = !S.navOpen;
-    document.getElementById('rail')?.classList.toggle('closed');
-  });
-
-  document.querySelectorAll('[data-act="gotoSettings"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      S.tab = 'settings';
-      renderTab('settings');
+  document.querySelectorAll('[data-day]').forEach(el => {
+    el.addEventListener('click', () => {
+      // Simple day selection for Day vs Day
+      const day = el.dataset.day;
+      const existing = document.querySelector('[data-day-selected]');
+      if(existing && existing.dataset.day === day){
+        existing.removeAttribute('data-day-selected');
+        existing.style.borderColor = 'var(--border-light)';
+        return;
+      }
+      if(existing){
+        existing.removeAttribute('data-day-selected');
+        existing.style.borderColor = 'var(--border-light)';
+      }
+      el.setAttribute('data-day-selected', 'true');
+      el.style.borderColor = 'var(--accent)';
+      el.style.background = 'var(--accent-light)';
+      
+      // Show toast
+      showToast('Day selected: ' + dateFmt(day), 'info');
     });
   });
-
-  // Initial render
-  renderTab(S.tab);
 }
 
-/* =========================== MAIN APP ========================== */
-async function initApp(){
+/* =========================== TOAST ========================== */
+function showToast(message, type = 'info'){
+  const existing = document.querySelector('.toast');
+  if(existing) existing.remove();
+  const div = document.createElement('div');
+  div.className = `toast ${type}`;
+  div.innerHTML = `
+    <button class="close" onclick="this.parentElement.remove()">×</button>
+    <div class="title">${type === 'error' ? 'Error' : type === 'success' ? 'Success' : 'Info'}</div>
+    <div>${message}</div>
+  `;
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 5000);
+}
+
+/* =========================== INIT ========================== */
+async function init(){
   const root = document.getElementById('root');
-  
+  root.innerHTML = `
+    <div class="loading-overlay">
+      <div class="loading-spinner"></div>
+      <p>Loading transaction data...</p>
+    </div>
+  `;
+
   try {
-    root.innerHTML = `<div class="boot">🔍 LOADING DATA SOURCE</div>`;
-
-    // Try to get Tableau data
-    let cols = null;
-    let rows = [];
-    const tableauData = await readWorksheet();
+    const result = await loadData();
     
-    if(tableauData && tableauData.cols && tableauData.cols.length > 0) {
-      cols = tableauData.cols;
-      rows = tableauData.rows || [];
-      console.log('✅ Tableau data loaded:', rows.length, 'rows,', cols.length, 'columns');
+    if(result && result.cols && result.cols.length) {
+      State.cols = result.cols;
+      State.raw = result.rows || [];
+      State.validation = validate(result.cols, State.raw);
+      
+      if(State.validation.valid && State.raw.length) {
+        State.data = processData(result.cols, State.raw);
+        if(!State.data) {
+          State.validation.errors.push('Failed to process data - check field formats');
+          State.validation.valid = false;
+        }
+      }
     } else {
-      console.warn('⚠️ No Tableau data available - dashboard will show "No Data" state');
-      cols = [];
-      rows = [];
+      State.validation = {
+        valid: false,
+        errors: ['No data source available. Connect a Tableau worksheet.'],
+        warnings: [],
+        fields: {},
+        hasData: false
+      };
     }
-
-    // Validate the data
-    const validationResult = validateData(cols, rows);
-    console.log('Validation result:', validationResult);
     
-    // Load dashboard (always loads, even without data)
-    loadDashboard(cols, rows, validationResult);
-
-  } catch(err) {
-    console.error('Fatal error:', err);
-    // Still load dashboard with error state
-    const validationResult = {
+    State.loading = false;
+    renderDashboard();
+    
+    // Show status
+    if(State.validation?.valid && State.data) {
+      showToast(`✅ Loaded ${State.data.recs.length} transactions`, 'success');
+    } else if(State.validation?.errors?.length) {
+      showToast(`⚠️ ${State.validation.errors.join('; ')}`, 'warning');
+    }
+    
+  } catch(e) {
+    console.error('Init error:', e);
+    State.loading = false;
+    State.error = e.message;
+    State.validation = {
       valid: false,
-      errors: [err.message || 'Unknown error occurred'],
+      errors: [e.message || 'Unknown error'],
       warnings: [],
-      fieldStatus: {},
-      dataPreview: [],
-      stats: {},
+      fields: {},
       hasData: false
     };
-    loadDashboard([], [], validationResult);
+    renderDashboard();
+    showToast('Error loading data: ' + e.message, 'error');
   }
 }
 
-/* =========================== START APP ========================== */
-document.addEventListener('DOMContentLoaded', initApp);
+// Start
+document.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
 </html>
