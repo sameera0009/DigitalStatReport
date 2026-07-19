@@ -150,199 +150,26 @@ kbd{font:700 11px 'JetBrains Mono',monospace;padding:3px 8px;border-radius:6px;b
 .theme-card{border:2px solid var(--border);border-radius:14px;padding:14px;cursor:pointer;transition:all .25s}
 .theme-card.on{border-color:var(--accent)}
 
-/* Validation Screen Styles */
-.validation-container{
-  max-width: 960px;
-  margin: 30px auto;
-  padding: 30px;
-  background: var(--surface);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  animation: slideDown 0.5s cubic-bezier(.2,.7,.2,1) both;
-}
-.validation-container h2{
-  font: 700 22px Sora,sans-serif;
-  color: var(--text);
-  margin: 0 0 6px 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.validation-container .subtitle{
-  color: var(--sub);
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-.validation-status{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  font-weight: 600;
-  font-size: 15px;
-}
-.validation-status.success{
-  background: #e8f5e9;
-  color: #2e7d32;
-  border: 1px solid #a5d6a7;
-}
-.validation-status.error{
-  background: #ffebee;
-  color: #c62828;
-  border: 1px solid #ef9a9a;
-}
-.validation-status.warning{
-  background: #fff3e0;
-  color: #e65100;
-  border: 1px solid #ffcc80;
-}
-.validation-status .icon{font-size: 28px;}
-.validation-grid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin: 16px 0;
-}
-.validation-card{
-  background: var(--surface2);
-  border-radius: 12px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-}
-.validation-card .label{
-  font: 700 10px Sora,sans-serif;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--sub);
-  margin-bottom: 6px;
-}
-.validation-card .value{
-  font: 600 16px 'JetBrains Mono',monospace;
-  color: var(--text);
-  word-break: break-all;
-}
-.validation-card .value.missing{color: var(--error);}
-.validation-card .value.found{color: var(--good);}
-.field-list{
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 12px 0;
-}
-.field-item{
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  background: var(--surface);
-  border-radius: 8px;
-  border: 1px solid var(--border);
-  font-size: 13px;
-}
-.field-item .status-icon{font-size: 18px;flex-shrink: 0;}
-.field-item .field-name{
-  font-weight: 600;
-  font-family: 'JetBrains Mono',monospace;
-  color: var(--text);
-  flex: 1;
-}
-.field-item .field-status{
-  font-size: 12px;
-  padding: 2px 12px;
-  border-radius: 12px;
-  background: var(--surface2);
-  color: var(--sub);
-  white-space: nowrap;
-}
-.field-item .field-status.missing{
-  background: #ffebee;
-  color: #c62828;
-}
-.field-item .field-status.found{
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-.field-item .field-status.warning{
-  background: #fff3e0;
-  color: #e65100;
-}
-.field-item .field-detail{
-  color: var(--sub);
-  font-size: 12px;
-  max-width: 200px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.data-preview{
-  margin-top: 16px;
-  background: var(--surface2);
-  border-radius: 12px;
-  padding: 16px;
-  border: 1px solid var(--border);
-  overflow-x: auto;
-}
-.data-preview table{
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 12px;
-}
-.data-preview th{
-  text-align: left;
-  padding: 8px 12px;
-  font: 700 10px Sora,sans-serif;
-  letter-spacing: 0.8px;
-  color: var(--sub);
-  text-transform: uppercase;
-  border-bottom: 2px solid var(--border);
-}
-.data-preview td{
-  padding: 6px 12px;
-  font-family: 'JetBrains Mono',monospace;
-  font-size: 11px;
-  color: var(--text);
-  border-bottom: 1px solid var(--border);
-}
-.data-preview .empty{color: var(--sub);font-style: italic;}
-.data-preview .error-cell{color: var(--error);font-weight: 600;}
-.progress-container{
-  width: 100%;
-  height: 4px;
-  background: var(--surface2);
-  border-radius: 2px;
-  margin: 16px 0;
-  overflow: hidden;
-}
-.progress-bar{
-  height: 100%;
-  background: var(--heroGrad);
-  border-radius: 2px;
-  transition: width 0.3s ease;
-  width: 0%;
-}
-.retry-btn{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 24px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-  margin-top: 8px;
-}
-.retry-btn:hover{opacity: 0.85;}
-.retry-btn:disabled{cursor:not-allowed;opacity: 0.5;}
-.btn-group{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;}
 .error-box{padding:12px 16px;background:#ffebee;border-radius:8px;border-left:4px solid #c62828;margin:10px 0;}
 .warning-box{padding:12px 16px;background:#fff3e0;border-radius:8px;border-left:4px solid #e65100;margin:10px 0;}
+.field-list{display:flex;flex-direction:column;gap:8px;margin:12px 0;}
+.field-item{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;
+  background:var(--surface);border-radius:8px;border:1px solid var(--border);font-size:13px;
+}
+.field-item .status-icon{font-size:18px;flex-shrink:0;}
+.field-item .field-name{font-weight:600;font-family:'JetBrains Mono',monospace;color:var(--text);flex:1;}
+.field-item .field-status{
+  font-size:12px;padding:2px 12px;border-radius:12px;background:var(--surface2);color:var(--sub);white-space:nowrap;
+}
+.field-item .field-status.missing{background:#ffebee;color:#c62828;}
+.field-item .field-status.found{background:#e8f5e9;color:#2e7d32;}
+.field-item .field-detail{color:var(--sub);font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.data-preview{margin-top:16px;background:var(--surface2);border-radius:12px;padding:16px;border:1px solid var(--border);overflow-x:auto;}
+.data-preview table{width:100%;border-collapse:collapse;font-size:12px;}
+.data-preview th{text-align:left;padding:8px 12px;font:700 10px Sora,sans-serif;letter-spacing:0.8px;color:var(--sub);text-transform:uppercase;border-bottom:2px solid var(--border);}
+.data-preview td{padding:6px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text);border-bottom:1px solid var(--border);}
+.data-preview .empty{color:var(--sub);font-style:italic;}
 </style>
 </head>
 <body>
@@ -357,7 +184,6 @@ const CARD_CATS=["CBC Cards at CBC Devices","CBC Issuer Txns at Other ATMs","CBC
 const QPLUS_CAT="Q+ Transactions", DECLINED_CAT="Declined Card Transactions";
 const DIGITAL_CATS=["CEFTS Inward","CEFTS Outward","Inward e-Remittances","PayMaster","ComBank Digital — Financial","ComBank Digital — Non-Financial","Flash — Financial"];
 const SCHEMES=["LankaPay","Visa","MasterCard","UnionPay"];
-const THEME_PARAM="pl_theme";
 const THEMES={
  light:{label:"Light",mode:"light",blur:"none",bg:"#f5f7fb",bgImage:"none",surface:"#ffffff",surface2:"#f0f3f9",border:"#e3e8f2",text:"#0e1626",sub:"#63708c",accent:"#3b5bdb",accent2:"#0ca678",good:"#0ca678",bad:"#e03131",warn:"#e8890c",donut:["#3b5bdb","#0ca678","#7048e8","#f08c00","#d6336c","#1098ad","#868e96"],glow:"none",shadow:"0 6px 24px rgba(14,22,38,.07)",heroGrad:"linear-gradient(90deg,#3b5bdb,#1098ad)"},
  dark:{label:"Dark",mode:"dark",blur:"none",bg:"#0c111c",bgImage:"none",surface:"#131a2a",surface2:"#1b2438",border:"#26314a",text:"#e9eef8",sub:"#94a1bd",accent:"#6d8dff",accent2:"#31d0a5",good:"#31d0a5",bad:"#ff6b6b",warn:"#ffb347",donut:["#6d8dff","#31d0a5","#a78bfa","#ffa94d","#f783ac","#3bc9db","#8a94a6"],glow:"none",shadow:"0 10px 32px rgba(0,0,0,.5)",heroGrad:"linear-gradient(90deg,#6d8dff,#3bc9db)"},
@@ -433,7 +259,7 @@ const idxOf=(cols,name)=>cols.findIndex(c=>cleanFieldName(c.fieldName)===name.to
 async function readWorksheet(){
   const tb=window.tableau;
   if(!tb || !tb.extensions) {
-    console.warn('Tableau Extensions not available, using sample data');
+    console.warn('Tableau Extensions not available');
     return null;
   }
   try {
@@ -479,14 +305,18 @@ function validateData(cols, rows){
     warnings: [],
     fieldStatus: {},
     dataPreview: [],
-    stats: {}
+    stats: {},
+    hasData: false
   };
 
   if(!cols || cols.length === 0){
     results.valid = false;
     results.errors.push("No columns found in the data source");
+    results.hasData = false;
     return results;
   }
+
+  results.hasData = true;
 
   REQUIRED_COLS.forEach(req => {
     const idx = idxOf(cols, req);
@@ -516,366 +346,138 @@ function validateData(cols, rows){
     results.errors.push("No data rows found in the worksheet");
   }
 
-  // Check data types and values
-  const numericIssues = [];
-  const dateIssues = [];
-  const groupIssues = [];
-  const validGroups = new Set(["CARD", "DIGITAL", "QPLUS"]);
-  const foundGroups = new Set();
+  // Check data types if we have data
+  if(rows.length > 0 && cols.length > 0){
+    const numericIssues = [];
+    const dateIssues = [];
+    const groupIssues = [];
+    const validGroups = new Set(["CARD", "DIGITAL", "QPLUS"]);
+    const foundGroups = new Set();
 
-  rows.slice(0, 1000).forEach((row, i) => {
-    REQUIRED_COLS.forEach(req => {
-      const info = results.fieldStatus[req];
-      if(!info?.found) return;
-      const idx = info.index;
-      const val = row[idx]?.value;
-      
-      if(req === "APPROVED_COUNT" || req === "DECLINED_COUNT"){
-        if(val !== undefined && val !== null && val !== "" && isNaN(Number(val))){
-          numericIssues.push(`Row ${i+1}, ${req}: "${val}"`);
-        }
-      }
-      if(req === "TXN_DATE"){
-        if(val && isNaN(new Date(val).getTime())){
-          dateIssues.push(`Row ${i+1}: "${val}"`);
-        }
-      }
-      if(req === "GROUP"){
-        const cleaned = cleanText(row[idx]);
-        if(cleaned){
-          const upper = cleaned.toUpperCase();
-          foundGroups.add(upper);
-          if(!validGroups.has(upper)){
-            groupIssues.push(`"${cleaned}"`);
+    rows.slice(0, 1000).forEach((row, i) => {
+      REQUIRED_COLS.forEach(req => {
+        const info = results.fieldStatus[req];
+        if(!info?.found) return;
+        const idx = info.index;
+        const val = row[idx]?.value;
+        
+        if(req === "APPROVED_COUNT" || req === "DECLINED_COUNT"){
+          if(val !== undefined && val !== null && val !== "" && isNaN(Number(val))){
+            numericIssues.push(`Row ${i+1}, ${req}: "${val}"`);
           }
         }
-      }
+        if(req === "TXN_DATE"){
+          if(val && isNaN(new Date(val).getTime())){
+            dateIssues.push(`Row ${i+1}: "${val}"`);
+          }
+        }
+        if(req === "GROUP"){
+          const cleaned = cleanText(row[idx]);
+          if(cleaned){
+            const upper = cleaned.toUpperCase();
+            foundGroups.add(upper);
+            if(!validGroups.has(upper)){
+              groupIssues.push(`"${cleaned}"`);
+            }
+          }
+        }
+      });
     });
-  });
 
-  if(numericIssues.length > 0){
-    results.warnings.push(`Numeric fields contain non-numeric values: ${numericIssues.slice(0,3).join('; ')}${numericIssues.length > 3 ? ` (+${numericIssues.length - 3} more)` : ''}`);
-  }
-  if(dateIssues.length > 0){
-    results.warnings.push(`Invalid date formats: ${dateIssues.slice(0,3).join('; ')}${dateIssues.length > 3 ? ` (+${dateIssues.length - 3} more)` : ''}`);
-  }
-  if(groupIssues.length > 0){
-    results.warnings.push(`GROUP contains unexpected values: ${[...new Set(groupIssues)].join(', ')}. Expected: CARD, DIGITAL, or QPLUS`);
-  }
-  if(foundGroups.size === 0 && rows.length > 0){
-    results.warnings.push("GROUP field appears to be empty in all rows");
+    if(numericIssues.length > 0){
+      results.warnings.push(`Numeric fields contain non-numeric values: ${numericIssues.slice(0,3).join('; ')}${numericIssues.length > 3 ? ` (+${numericIssues.length - 3} more)` : ''}`);
+    }
+    if(dateIssues.length > 0){
+      results.warnings.push(`Invalid date formats: ${dateIssues.slice(0,3).join('; ')}${dateIssues.length > 3 ? ` (+${dateIssues.length - 3} more)` : ''}`);
+    }
+    if(groupIssues.length > 0){
+      results.warnings.push(`GROUP contains unexpected values: ${[...new Set(groupIssues)].join(', ')}. Expected: CARD, DIGITAL, or QPLUS`);
+    }
+    if(foundGroups.size === 0 && rows.length > 0){
+      results.warnings.push("GROUP field appears to be empty in all rows");
+    }
+
+    results.stats.groups = [...foundGroups];
+    
+    // Build data preview
+    const previewCols = REQUIRED_COLS.filter(c => results.fieldStatus[c]?.found);
+    previewCols.forEach(c => {
+      const idx = results.fieldStatus[c].index;
+      results.dataPreview.push({
+        name: c,
+        originalName: cols[idx]?.fieldName || c,
+        samples: rows.slice(0, 5).map(row => {
+          const val = row[idx]?.value;
+          return val !== undefined && val !== null ? String(val) : "(empty)";
+        })
+      });
+    });
   }
 
-  results.stats.groups = [...foundGroups];
   results.stats.totalRows = rows.length;
   results.stats.totalCols = cols.length;
   results.stats.foundFields = REQUIRED_COLS.filter(c => results.fieldStatus[c]?.found);
   results.stats.missingFields = missingFields;
   results.stats.allFields = cols.map(c => c.fieldName);
 
-  // Build data preview
-  const previewCols = REQUIRED_COLS.filter(c => results.fieldStatus[c]?.found);
-  previewCols.forEach(c => {
-    const idx = results.fieldStatus[c].index;
-    results.dataPreview.push({
-      name: c,
-      originalName: cols[idx]?.fieldName || c,
-      samples: rows.slice(0, 5).map(row => {
-        const val = row[idx]?.value;
-        return val !== undefined && val !== null ? String(val) : "(empty)";
-      })
-    });
-  });
-
   return results;
 }
 
-/* =========================== RENDER VALIDATION SCREEN ========================== */
-function renderValidationScreen(validationResult, onRetry){
-  const root = document.getElementById('root');
-  const isValid = validationResult.valid;
-  const errors = validationResult.errors || [];
-  const warnings = validationResult.warnings || [];
-  const status = validationResult.fieldStatus || {};
-  const stats = validationResult.stats || {};
-  const preview = validationResult.dataPreview || [];
+/* =========================== GLOBAL STATE ========================== */
+const S = {
+  tab: 'summary',
+  scope: 'L7',
+  theme: 'light',
+  navOpen: true,
+  cards: { cats: [...CARD_CATS] },
+  digital: { sel: DIGITAL_CATS.slice(0, 3) },
+  donut: { path: [], sel: null },
+  mMode: 'all',
+  compare: { customDates: false, customCats: false, showSubs: false, chartType: 'bar', selDates: [], selCats: ['CARDS_ALL', 'DIGITAL_ALL'], from: '', to: '' },
+  dayvs: { a: null, b: null },
+  table: { group: 'ALL', q: '', sortK: 'tot', sortDir: -1 },
+  data: null,
+  ready: false,
+  validationResult: null,
+  cols: null,
+  rows: null,
+  shapedData: null
+};
 
-  const hasErrors = errors.length > 0;
-  const hasWarnings = warnings.length > 0;
+/* =========================== CHIP HELPER ========================== */
+function chip(label, opts = {}) {
+  const classes = ['chip'];
+  if(opts.small !== false) classes.push('sm');
+  if(opts.on) classes.push('on');
+  if(opts.act) classes.push('click');
+  if(opts.tone) classes.push(opts.tone);
+  return `<span class="${classes.join(' ')}" ${opts.act ? `data-act="${opts.act}"` : ''} ${opts.arg ? `data-arg="${opts.arg}"` : ''}>${label}</span>`;
+}
 
-  let statusClass = 'success';
-  let statusIcon = '✅';
-  let statusText = 'Data validation passed!';
-
-  if(hasErrors){
-    statusClass = 'error';
-    statusIcon = '❌';
-    statusText = 'Validation failed — please fix the issues below';
-  } else if(hasWarnings){
-    statusClass = 'warning';
-    statusIcon = '⚠️';
-    statusText = 'Validation passed with warnings — data may still work';
-  }
-
-  const fieldItems = REQUIRED_COLS.map(field => {
-    const info = status[field] || { found: false };
-    const isFound = info.found;
-    const statusClass = isFound ? 'found' : 'missing';
-    const statusIcon = isFound ? '✅' : '❌';
-    const statusText = isFound ? 'Found ✓' : 'Missing ✗';
-    const details = isFound ? `${info.originalName || field} (${info.type || 'unknown'})` : 'Not found';
-    const sample = isFound && info.sampleValue !== undefined ? `sample: ${String(info.sampleValue).substring(0, 30)}` : '';
-
+/* =========================== TAB FUNCTIONS ========================== */
+function tabSummary(){
+  const vr = S.validationResult || {};
+  const hasData = vr.hasData && S.shapedData && S.shapedData.recs && S.shapedData.recs.length > 0;
+  
+  if(!hasData){
     return `
-      <div class="field-item">
-        <span class="status-icon">${statusIcon}</span>
-        <span class="field-name">${field}</span>
-        <span class="field-status ${statusClass}">${statusText}</span>
-        <span class="field-detail">${details}</span>
-        ${sample ? `<span style="color:var(--sub);font-size:11px;margin-left:auto;">${sample}</span>` : ''}
-      </div>
-    `;
-  }).join('');
-
-  const previewHtml = preview.length > 0 ? `
-    <div class="data-preview">
-      <div style="font:700 11px Sora,sans-serif;letter-spacing:1.2px;color:var(--sub);text-transform:uppercase;margin-bottom:10px;">
-        📊 Data Preview (first 3 rows)
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Field</th>
-            ${preview[0]?.samples.map((_, i) => `<th>Row ${i + 1}</th>`).join('') || ''}
-          </tr>
-        </thead>
-        <tbody>
-          ${preview.map(col => `
-            <tr>
-              <td style="font-weight:600;color:var(--text);">${col.name}</td>
-              ${col.samples.map(sample => `
-                <td class="${sample === '(empty)' ? 'empty' : ''}">${sample}</td>
-              `).join('')}
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-  ` : '';
-
-  const errorHtml = errors.length > 0 ? `
-    <div class="error-box">
-      <div style="font-weight:600;color:#c62828;font-size:13px;">❌ Errors</div>
-      ${errors.map(e => `<div style="font-size:13px;color:#c62828;padding:3px 0;">• ${e}</div>`).join('')}
-    </div>
-  ` : '';
-
-  const warningHtml = warnings.length > 0 ? `
-    <div class="warning-box">
-      <div style="font-weight:600;color:#e65100;font-size:13px;">⚠️ Warnings</div>
-      ${warnings.map(w => `<div style="font-size:13px;color:#e65100;padding:3px 0;">• ${w}</div>`).join('')}
-    </div>
-  ` : '';
-
-  const groupStats = stats.groups && stats.groups.length > 0 ? 
-    `<span style="margin-left:12px;font-size:12px;color:var(--sub);">Groups: ${stats.groups.join(', ')}</span>` : '';
-
-  root.innerHTML = `
-    <div style="min-height:100vh;background:var(--bg);padding:20px;">
-      <div class="validation-container">
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:6px;">
-          <span style="font-size:32px;">${hasErrors ? '🔍' : '📊'}</span>
-          <div>
-            <h2>Data Validation</h2>
-            <div class="subtitle">
-              Checking worksheet data against required schema
-              ${groupStats}
+      <div class="stack">
+        <div class="card">
+          <h3>📊 No Data Available</h3>
+          <p style="color:var(--sub);">Please connect a data source with the required fields.</p>
+          <div style="margin-top:12px;padding:12px;background:var(--surface2);border-radius:8px;">
+            <div style="font-weight:600;margin-bottom:8px;">Required Fields:</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              ${REQUIRED_COLS.map(f => `<span class="chip">${f}</span>`).join('')}
             </div>
           </div>
-        </div>
-
-        <div class="validation-status ${statusClass}">
-          <span class="icon">${statusIcon}</span>
-          <span>${statusText}</span>
-          <span style="margin-left:auto;font-size:12px;font-weight:400;">
-            ${stats.totalRows || 0} rows · ${stats.totalCols || 0} columns
-          </span>
-        </div>
-
-        ${errorHtml}
-        ${warningHtml}
-
-        <div style="font:700 11px Sora,sans-serif;letter-spacing:1.2px;color:var(--sub);text-transform:uppercase;margin:16px 0 10px;">
-          📋 Required Fields
-        </div>
-        <div class="field-list">
-          ${fieldItems}
-        </div>
-
-        <div class="validation-grid">
-          <div class="validation-card">
-            <div class="label">📁 All Fields Found in Data</div>
-            <div class="value" style="font-size:13px;font-weight:400;">
-              ${stats.allFields && stats.allFields.length > 0 ? 
-                stats.allFields.map(f => `<span style="display:inline-block;background:var(--surface);padding:2px 10px;border-radius:4px;margin:2px;font-size:11px;font-family:'JetBrains Mono',monospace;">${f}</span>`).join('') :
-                '<span class="missing">No fields detected</span>'
-              }
-            </div>
-          </div>
-          <div class="validation-card">
-            <div class="label">🔢 Statistics</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;">
-              <div><span style="color:var(--sub);font-size:11px;">Total Rows</span><br><span class="value" style="font-size:18px;">${stats.totalRows || 0}</span></div>
-              <div><span style="color:var(--sub);font-size:11px;">Total Columns</span><br><span class="value" style="font-size:18px;">${stats.totalCols || 0}</span></div>
-              <div><span style="color:var(--sub);font-size:11px;">Fields Found</span><br><span class="value" style="font-size:18px;color:var(--good);">${stats.foundFields?.length || 0}</span></div>
-              <div><span style="color:var(--sub);font-size:11px;">Fields Missing</span><br><span class="value" style="font-size:18px;color:var(--error);">${stats.missingFields?.length || 0}</span></div>
-            </div>
-          </div>
-        </div>
-
-        ${previewHtml}
-
-        <div class="btn-group">
-          <button class="retry-btn" data-action="retry">🔄 Retry Loading</button>
-          ${isValid ? `
-            <button class="retry-btn" data-action="continue" style="background:var(--good);">
-              ✅ Continue to Dashboard
-            </button>
-          ` : `
-            <button class="retry-btn" data-action="continue" style="background:var(--sub);cursor:not-allowed;opacity:0.5;" disabled>
-              ⛔ Fix Issues to Continue
-            </button>
-          `}
-          <button class="retry-btn" data-action="reset" style="background:var(--bad);">
-            🔄 Reset &amp; Reload
-          </button>
-        </div>
-
-        <div class="progress-container">
-          <div class="progress-bar" style="width:${isValid ? '100%' : '60%'};"></div>
-        </div>
-
-        <div style="margin-top:16px;font-size:12px;color:var(--sub);border-top:1px solid var(--border);padding-top:14px;">
-          💡 Required fields: <b style="color:var(--text);font-family:'JetBrains Mono',monospace;">TXN_DATE, GROUP, CATEGORY, SUB_CATEGORY, APPROVED_COUNT, DECLINED_COUNT</b>
-          <br>• <span style="color:var(--good);">GROUP</span> must be CARD, DIGITAL, or QPLUS
-          <br>• <span style="color:var(--good);">TXN_DATE</span> must be a valid date (YYYY-MM-DD)
-          <br>• <span style="color:var(--good);">APPROVED_COUNT</span> &amp; <span style="color:var(--good);">DECLINED_COUNT</span> must be numeric
-        </div>
-      </div>
-    </div>
-  `;
-
-  // Attach event listeners
-  root.querySelectorAll('[data-action]').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const action = e.currentTarget.dataset.action;
-      if(action === 'retry' || action === 'reset'){
-        if(onRetry) onRetry();
-      } else if(action === 'continue' && isValid){
-        const event = new CustomEvent('validationContinue');
-        document.dispatchEvent(event);
-      }
-    });
-  });
-}
-
-/* =========================== MAIN APP ========================== */
-async function initApp(){
-  const root = document.getElementById('root');
-  
-  try {
-    root.innerHTML = `<div class="boot">🔍 VALIDATING DATA SOURCE</div>`;
-
-    // Try to get Tableau data
-    let cols, rows;
-    const tableauData = await readWorksheet();
-    
-    if(tableauData && tableauData.cols && tableauData.rows && tableauData.rows.length > 0) {
-      cols = tableauData.cols;
-      rows = tableauData.rows;
-      console.log('✅ Tableau data loaded:', rows.length, 'rows');
-    } else {
-      console.warn('⚠️ No Tableau data available, using sample data for demonstration');
-      // Use sample data that matches the required schema
-      cols = [
-        { fieldName: 'TXN_DATE' },
-        { fieldName: 'GROUP' },
-        { fieldName: 'CATEGORY' },
-        { fieldName: 'SUB_CATEGORY' },
-        { fieldName: 'APPROVED_COUNT' },
-        { fieldName: 'DECLINED_COUNT' }
-      ];
-      rows = [
-        [{ value: '2026-07-13' }, { value: 'CARD' }, { value: 'CBC Cards at CBC Devices' }, { value: 'Visa' }, { value: 150 }, { value: 5 }],
-        [{ value: '2026-07-13' }, { value: 'DIGITAL' }, { value: 'ComBank Digital — Financial' }, { value: '' }, { value: 89 }, { value: 2 }],
-        [{ value: '2026-07-14' }, { value: 'CARD' }, { value: 'CBC Cards at CBC Devices' }, { value: 'MasterCard' }, { value: 162 }, { value: 8 }],
-        [{ value: '2026-07-14' }, { value: 'DIGITAL' }, { value: 'CEFTS Inward' }, { value: '' }, { value: 45 }, { value: 1 }],
-        [{ value: '2026-07-15' }, { value: 'CARD' }, { value: 'CBC Issuer Txns at Other ATMs' }, { value: 'Visa' }, { value: 98 }, { value: 3 }],
-      ];
-    }
-
-    // Validate the data
-    const validationResult = validateData(cols, rows);
-    
-    // Show validation screen
-    renderValidationScreen(validationResult, () => {
-      window.location.reload();
-    });
-
-    // Listen for continue event
-    document.addEventListener('validationContinue', () => {
-      if(validationResult.valid){
-        // Store data in global state
-        window.APP_DATA = { cols, rows, validationResult };
-        loadFullDashboard(cols, rows, validationResult);
-      }
-    });
-
-    // Auto-continue if valid and no errors
-    if(validationResult.valid && validationResult.errors.length === 0){
-      setTimeout(() => {
-        const continueBtn = document.querySelector('[data-action="continue"]');
-        if(continueBtn && !continueBtn.disabled){
-          continueBtn.click();
-        }
-      }, 1500);
-    }
-
-  } catch(err) {
-    console.error('Fatal error:', err);
-    root.innerHTML = `
-      <div style="min-height:100vh;background:var(--bg);display:grid;place-items:center;padding:20px;">
-        <div class="validation-container" style="max-width:700px;border-left:4px solid var(--error);">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-            <span style="font-size:36px;">💥</span>
-            <h2 style="margin:0;color:var(--error);">Fatal Error</h2>
-          </div>
-          <div class="error-box">
-            <div style="font-weight:600;">${esc(err.message)}</div>
-            <div style="font-size:13px;margin-top:4px;color:#c62828;">${err.stack || ''}</div>
-          </div>
-          <button class="retry-btn" onclick="window.location.reload()">🔄 Retry</button>
-          <div style="margin-top:16px;font-size:13px;color:var(--sub);border-top:1px solid var(--border);padding-top:12px;">
-            💡 Make sure you're running this in Tableau with a worksheet containing the required fields.
-          </div>
+          <button class="retry-btn" style="margin-top:16px;background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:10px;font-weight:600;cursor:pointer;" onclick="window.location.reload()">🔄 Reload Data</button>
         </div>
       </div>
     `;
   }
-}
 
-/* =========================== FULL DASHBOARD ========================== */
-function loadFullDashboard(cols, rows, validationResult){
-  const root = document.getElementById('root');
-  
-  // Process the data
-  const shaped = shapeData(cols, rows);
-  if(shaped.error){
-    root.innerHTML = `<div class="errwrap"><div class="errcard"><h2>Data Error</h2><p>Missing fields: ${shaped.error.join(', ')}</p><button onclick="location.reload()">Retry</button></div></div>`;
-    return;
-  }
-
-  const data = shaped;
+  const data = S.shapedData;
   const allDates = data.dates;
   const allRecs = data.recs;
   const sc = scopeDates(allDates, S.scope);
@@ -885,108 +487,165 @@ function loadFullDashboard(cols, rows, validationResult){
   const recs = allRecs.filter(r => scDates.includes(r.date));
   const ctxDates = contextDates(allDates, scDates);
 
-  // Store in global V for tab functions
-  window.V = { recs, scDates, prevRecs, prevDates, allRecs, allDates, ctxDates };
-  window.S = { 
-    ...S, 
-    data: data,
-    ready: true,
-    validationResult: validationResult
-  };
-
-  // Build the full dashboard HTML
-  root.innerHTML = `
-    <div class="app">
-      <div class="rail" id="rail">
-        <div class="brand">
-          <div style="width:28px;height:28px;border-radius:8px;background:var(--heroGrad);display:grid;place-items:center;color:#fff;font:700 13px Sora,sans-serif;flex-shrink:0">CB</div>
-          <div class="brand-txt"><b>Commercial Bank</b><span>Transaction Analytics</span></div>
+  return `
+    <div class="stack">
+      <div class="row">
+        <div class="card" style="flex:1;">
+          <h3>✅ Data Loaded Successfully</h3>
+          <div class="grid-auto" style="margin-top:12px;">
+            <div class="tile"><div style="font-weight:600;color:var(--sub);font-size:11px;">Total Rows</div><div style="font-size:24px;font-weight:700;">${fmtFull(allRecs.length)}</div></div>
+            <div class="tile"><div style="font-weight:600;color:var(--sub);font-size:11px;">Date Range</div><div style="font-size:18px;font-weight:700;">${allDates.length > 0 ? fmtDate(allDates[0]) + ' → ' + fmtDate(allDates[allDates.length-1]) : '—'}</div></div>
+            <div class="tile"><div style="font-weight:600;color:var(--sub);font-size:11px;">Current Scope</div><div style="font-size:18px;font-weight:700;">${scDates.length} days</div></div>
+            <div class="tile"><div style="font-weight:600;color:var(--sub);font-size:11px;">Categories</div><div style="font-size:18px;font-weight:700;">${new Set(allRecs.map(r => r.cat)).size}</div></div>
+          </div>
+          ${S.validationResult?.warnings?.length > 0 ? `<div class="warning-box" style="margin-top:12px;">${S.validationResult.warnings.map(w => '⚠️ ' + w).join('<br>')}</div>` : ''}
         </div>
-        ${NAV.map(n => `
-          <button class="nav-btn ${S.tab === n.id ? 'on' : ''}" data-nav="${n.id}">
-            <span>${n.id === 'summary' ? '📊' : n.id === 'cards' ? '💳' : n.id === 'digital' ? '📱' : n.id === 'compare' ? '📈' : n.id === 'dayvs' ? '⚖️' : n.id === 'table' ? '📋' : '⚙️'}</span>
-            <span class="nav-lbl">${n.label}</span>
-          </button>
-        `).join('')}
-        <div class="spacer"></div>
-        <button class="nav-btn boxed" data-act="toggleNav">
-          <span>${S.navOpen ? '◀' : '▶'}</span>
-          <span class="nav-lbl">${S.navOpen ? 'Collapse' : 'Expand'}</span>
-        </button>
       </div>
-      <div class="mainwrap">
-        <main id="mainContent">
-          <header class="top">
-            <div><div class="eyebrow">COMMERCIAL BANK OF CEYLON PLC</div>
-            <h1 class="title" id="pageTitle">${NAV.find(n => n.id === S.tab)?.label || 'Summary'}</h1></div>
-            <div class="scopebar">
-              ${SCOPES.map(s => chip(s.label, { on: S.scope === s.key, act: 'scope', arg: s.key })).join('')}
-              <span class="scopeinfo">${scDates.length} days · ${fmtDate(scDates[0])} – ${fmtDate(scDates[scDates.length-1])}</span>
-            </div>
-          </header>
-          <div id="tabContent">${tabSummary()}</div>
-        </main>
-        <footer>
-          <span class="brandline"><span class="dot" style="background:var(--good)"></span> Live · ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-          <span class="sep">|</span>
-          <span>${fmtFull(data.recs.length)} transactions · ${data.dates.length} days</span>
-          <span class="right">
-            <span>Theme: ${THEMES[S.theme]?.label || 'Light'}</span>
-            ${validationResult.warnings.length > 0 ? `<span class="chip warnc" style="cursor:pointer" data-act="gotoSettings">⚠️ ${validationResult.warnings.length} warnings</span>` : ''}
-            ${validationResult.errors.length > 0 ? `<span class="chip bad" style="cursor:pointer" data-act="gotoSettings">❌ ${validationResult.errors.length} errors</span>` : ''}
-          </span>
-        </footer>
+      <div class="card">
+        <h3>📈 Quick Overview</h3>
+        <p style="color:var(--sub);">Navigate to other tabs for detailed analytics.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+          ${NAV.filter(n => n.id !== 'summary' && n.id !== 'settings').map(n => 
+            `<button class="chip click" data-act="navTo" data-arg="${n.id}">${n.label}</button>`
+          ).join('')}
+        </div>
       </div>
     </div>
   `;
-
-  // Attach event listeners
-  attachEventListeners();
 }
 
-/* =========================== EVENT HANDLERS ========================== */
-function attachEventListeners(){
-  // Navigation
-  document.querySelectorAll('[data-nav]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tab = btn.dataset.nav;
-      S.tab = tab;
-      renderTab(tab);
-    });
-  });
+function tabSettings(){
+  const vr = S.validationResult || {};
+  const stats = vr.stats || {};
+  const status = vr.fieldStatus || {};
+  const hasData = vr.hasData;
+  
+  let fieldStatusHtml = REQUIRED_COLS.map(field => {
+    const info = status[field] || { found: false };
+    const isFound = info.found;
+    return `
+      <div class="field-item">
+        <span class="status-icon">${isFound ? '✅' : '❌'}</span>
+        <span class="field-name">${field}</span>
+        <span class="field-status ${isFound ? 'found' : 'missing'}">${isFound ? 'Found ✓' : 'Missing ✗'}</span>
+        <span class="field-detail">${isFound ? (info.originalName || field) : 'Not found'}</span>
+        ${isFound && info.sampleValue !== undefined ? `<span style="color:var(--sub);font-size:11px;margin-left:auto;">sample: ${String(info.sampleValue).substring(0, 30)}</span>` : ''}
+      </div>
+    `;
+  }).join('');
 
-  // Scope
-  document.querySelectorAll('[data-act="scope"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      S.scope = btn.dataset.arg;
-      renderTab(S.tab);
-    });
-  });
+  let previewHtml = '';
+  if(vr.dataPreview && vr.dataPreview.length > 0){
+    previewHtml = `
+      <div class="data-preview">
+        <div style="font:700 11px Sora,sans-serif;letter-spacing:1.2px;color:var(--sub);text-transform:uppercase;margin-bottom:10px;">
+          📊 Data Preview (first 3 rows)
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              ${vr.dataPreview[0]?.samples.map((_, i) => `<th>Row ${i + 1}</th>`).join('') || ''}
+            </tr>
+          </thead>
+          <tbody>
+            ${vr.dataPreview.map(col => `
+              <tr>
+                <td style="font-weight:600;color:var(--text);">${col.name}</td>
+                ${col.samples.map(sample => `
+                  <td class="${sample === '(empty)' ? 'empty' : ''}">${sample}</td>
+                `).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
 
-  // Toggle nav
-  document.querySelector('[data-act="toggleNav"]')?.addEventListener('click', () => {
-    S.navOpen = !S.navOpen;
-    document.getElementById('rail')?.classList.toggle('closed');
-  });
+  let allFieldsHtml = '';
+  if(stats.allFields && stats.allFields.length > 0){
+    allFieldsHtml = stats.allFields.map(f => 
+      `<span style="display:inline-block;background:var(--surface);padding:2px 10px;border-radius:4px;margin:2px;font-size:11px;font-family:'JetBrains Mono',monospace;">${f}</span>`
+    ).join('');
+  }
 
-  // Go to settings
-  document.querySelectorAll('[data-act="gotoSettings"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      S.tab = 'settings';
-      renderTab('settings');
-    });
-  });
-
-  // Chip clicks for tabs
-  document.querySelectorAll('.chip.click[data-act]').forEach(chip => {
-    chip.addEventListener('click', (e) => {
-      const act = chip.dataset.act;
-      const arg = chip.dataset.arg;
-      handleAction(act, arg, chip);
-    });
-  });
+  return `
+    <div class="stack">
+      <div class="card">
+        <h3>⚙️ Data Validation Report</h3>
+        <div style="margin:12px 0;padding:12px;background:var(--surface2);border-radius:8px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><strong>Status:</strong> ${vr.valid ? '✅ Valid' : '❌ Invalid'}</div>
+            <div><strong>Data Available:</strong> ${hasData ? '✅ Yes' : '❌ No'}</div>
+            <div><strong>Total Rows:</strong> ${stats.totalRows || 0}</div>
+            <div><strong>Total Columns:</strong> ${stats.totalCols || 0}</div>
+            <div><strong>Fields Found:</strong> ${stats.foundFields?.length || 0}/${REQUIRED_COLS.length}</div>
+            <div><strong>Fields Missing:</strong> ${stats.missingFields?.length || 0}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3>📋 Field Status</h3>
+        <div class="field-list">
+          ${fieldStatusHtml}
+        </div>
+      </div>
+      
+      ${vr.errors && vr.errors.length > 0 ? `
+        <div class="card" style="border-color:var(--error);">
+          <h3 style="color:var(--error);">❌ Errors (${vr.errors.length})</h3>
+          ${vr.errors.map(e => `<div style="padding:4px 0;color:#c62828;">• ${e}</div>`).join('')}
+        </div>
+      ` : ''}
+      
+      ${vr.warnings && vr.warnings.length > 0 ? `
+        <div class="card" style="border-color:var(--warn);">
+          <h3 style="color:var(--warn);">⚠️ Warnings (${vr.warnings.length})</h3>
+          ${vr.warnings.map(w => `<div style="padding:4px 0;color:#e65100;">• ${w}</div>`).join('')}
+        </div>
+      ` : ''}
+      
+      <div class="card">
+        <h3>📁 All Fields in Data</h3>
+        <div style="margin-top:8px;">
+          ${allFieldsHtml || '<span style="color:var(--sub);">No fields detected</span>'}
+        </div>
+      </div>
+      
+      ${previewHtml}
+      
+      <div class="card">
+        <h3>🎨 Theme</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${THEME_KEYS.map(k => `
+            <button class="chip click ${S.theme === k ? 'on' : ''}" data-act="theme" data-arg="${k}">${THEMES[k].label}</button>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3>🔄 Actions</h3>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px;">
+          <button class="retry-btn" onclick="window.location.reload()" style="background:var(--accent);color:#fff;border:none;padding:10px 24px;border-radius:10px;font-weight:600;cursor:pointer;">🔄 Reload Data</button>
+          ${vr.valid && hasData ? `
+            <button class="retry-btn" onclick="S.tab='summary';renderTab('summary');" style="background:var(--good);color:#fff;border:none;padding:10px 24px;border-radius:10px;font-weight:600;cursor:pointer;">📊 Go to Summary</button>
+          ` : ''}
+        </div>
+      </div>
+    </div>
+  `;
 }
 
+// Stub functions for other tabs
+function tabCards(){ return `<div class="card"><h3>💳 Cards Dashboard</h3><p style="color:var(--sub);">Card transaction analytics will appear here when data is loaded.</p></div>`; }
+function tabDigital(){ return `<div class="card"><h3>📱 Digital Dashboard</h3><p style="color:var(--sub);">Digital transaction analytics will appear here when data is loaded.</p></div>`; }
+function tabCompare(){ return `<div class="card"><h3>📈 Compare Dashboard</h3><p style="color:var(--sub);">Comparison analytics will appear here when data is loaded.</p></div>`; }
+function tabDayVs(){ return `<div class="card"><h3>⚖️ Day vs Day Dashboard</h3><p style="color:var(--sub);">Day comparison analytics will appear here when data is loaded.</p></div>`; }
+function tabTable(){ return `<div class="card"><h3>📋 Table View</h3><p style="color:var(--sub);">Raw data view will appear here when data is loaded.</p></div>`; }
+
+/* =========================== RENDER FUNCTIONS ========================== */
 function renderTab(tabId){
   // Update nav buttons
   document.querySelectorAll('[data-nav]').forEach(btn => {
@@ -1020,11 +679,20 @@ function renderTab(tabId){
       handleAction(act, arg, chip);
     });
   });
+
+  // Attach navTo actions
+  document.querySelectorAll('[data-act="navTo"]').forEach(el => {
+    el.addEventListener('click', () => {
+      const tab = el.dataset.arg;
+      if(tab){
+        S.tab = tab;
+        renderTab(tab);
+      }
+    });
+  });
 }
 
 function handleAction(act, arg, element){
-  console.log('Action:', act, arg);
-  
   switch(act){
     case 'theme':
       S.theme = arg;
@@ -1033,46 +701,6 @@ function handleAction(act, arg, element){
       break;
     case 'scope':
       S.scope = arg;
-      renderTab(S.tab);
-      break;
-    case 'mmode':
-      S.mMode = arg;
-      renderTab('summary');
-      break;
-    case 'cardcat':
-      const idx = S.cards.cats.indexOf(arg);
-      if(idx > -1) {
-        if(S.cards.cats.length > 1) {
-          S.cards.cats.splice(idx, 1);
-        }
-      } else {
-        S.cards.cats.push(arg);
-      }
-      renderTab('cards');
-      break;
-    case 'cardcatsAll':
-      S.cards.cats = S.cards.cats.length === CARD_CATS.length ? CARD_CATS.slice(0, 1) : [...CARD_CATS];
-      renderTab('cards');
-      break;
-    case 'digsel':
-      const di = S.digital.sel.indexOf(arg);
-      if(di > -1) {
-        if(S.digital.sel.length > 1) S.digital.sel.splice(di, 1);
-      } else {
-        S.digital.sel.push(arg);
-      }
-      renderTab('digital');
-      break;
-    case 'donutSeg':
-      S.donut.sel = arg;
-      renderTab(S.tab);
-      break;
-    case 'donutCrumb':
-      const level = parseInt(arg);
-      if(level < S.donut.path.length) {
-        S.donut.path = S.donut.path.slice(0, level);
-        S.donut.sel = null;
-      }
       renderTab(S.tab);
       break;
     default:
@@ -1090,145 +718,167 @@ function applyTheme(themeKey){
   S.theme = themeKey;
 }
 
-/* =========================== TAB FUNCTIONS (stubs for now) ========================== */
-function tabSummary(){
-  const V = window.V || {};
-  return `<div class="stack"><div class="card"><h3>Summary Dashboard</h3><p>Data loaded: ${V.allRecs?.length || 0} transactions across ${V.allDates?.length || 0} days</p>
-  <div class="grid-auto">
-    <div class="tile"><div style="font-weight:600">Validation Status</div><div>${window.S?.validationResult?.valid ? '✅ Valid' : '⚠️ Issues'}</div></div>
-    <div class="tile"><div style="font-weight:600">Fields Found</div><div>${window.S?.validationResult?.stats?.foundFields?.length || 0}/${REQUIRED_COLS.length}</div></div>
-  </div>
-  ${window.S?.validationResult?.warnings?.length > 0 ? `<div class="warning-box">${window.S.validationResult.warnings.map(w => '• ' + w).join('<br>')}</div>` : ''}
-  ${window.S?.validationResult?.errors?.length > 0 ? `<div class="error-box">${window.S.validationResult.errors.map(e => '• ' + e).join('<br>')}</div>` : ''}
-  </div></div>`;
-}
-
-function tabCards(){ return `<div class="card"><h3>Cards Dashboard</h3><p>Card transaction analytics</p></div>`; }
-function tabDigital(){ return `<div class="card"><h3>Digital Dashboard</h3><p>Digital transaction analytics</p></div>`; }
-function tabCompare(){ return `<div class="card"><h3>Compare Dashboard</h3><p>Comparison analytics</p></div>`; }
-function tabDayVs(){ return `<div class="card"><h3>Day vs Day Dashboard</h3><p>Day comparison analytics</p></div>`; }
-function tabTable(){ return `<div class="card"><h3>Table View</h3><p>Raw data view</p></div>`; }
-
-function tabSettings(){
-  const vr = window.S?.validationResult || {};
-  const stats = vr.stats || {};
-  const status = vr.fieldStatus || {};
+/* =========================== LOAD DASHBOARD ========================== */
+function loadDashboard(cols, rows, validationResult){
+  S.cols = cols;
+  S.rows = rows;
+  S.validationResult = validationResult;
   
-  return `
-    <div class="stack">
-      <div class="card">
-        <h3>⚙️ Data Validation Report</h3>
-        <div style="margin:12px 0;padding:12px;background:var(--surface2);border-radius:8px;">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-            <div><strong>Status:</strong> ${vr.valid ? '✅ Valid' : '❌ Invalid'}</div>
-            <div><strong>Total Rows:</strong> ${stats.totalRows || 0}</div>
-            <div><strong>Total Columns:</strong> ${stats.totalCols || 0}</div>
-            <div><strong>Fields Found:</strong> ${stats.foundFields?.length || 0}/${REQUIRED_COLS.length}</div>
-          </div>
+  // Shape the data if valid
+  if(validationResult.valid && rows && rows.length > 0){
+    const shaped = shapeData(cols, rows);
+    if(!shaped.error){
+      S.shapedData = shaped;
+      S.ready = true;
+    } else {
+      S.shapedData = null;
+      S.ready = false;
+    }
+  } else {
+    S.shapedData = null;
+    S.ready = false;
+  }
+
+  const root = document.getElementById('root');
+  const hasErrors = validationResult.errors && validationResult.errors.length > 0;
+  const hasWarnings = validationResult.warnings && validationResult.warnings.length > 0;
+  const hasData = validationResult.hasData && S.shapedData && S.shapedData.recs && S.shapedData.recs.length > 0;
+
+  let statusIcon = hasData ? '✅' : '⚠️';
+  let statusText = hasData ? 'Data Loaded' : 'No Data';
+  let statusColor = hasData ? 'var(--good)' : 'var(--warn)';
+
+  if(hasErrors){
+    statusIcon = '❌';
+    statusText = 'Validation Failed';
+    statusColor = 'var(--error)';
+  }
+
+  // Build the dashboard HTML
+  root.innerHTML = `
+    <div class="app">
+      <div class="rail" id="rail">
+        <div class="brand">
+          <div style="width:28px;height:28px;border-radius:8px;background:var(--heroGrad);display:grid;place-items:center;color:#fff;font:700 13px Sora,sans-serif;flex-shrink:0">CB</div>
+          <div class="brand-txt"><b>Commercial Bank</b><span>Transaction Analytics</span></div>
         </div>
+        ${NAV.map(n => `
+          <button class="nav-btn ${S.tab === n.id ? 'on' : ''}" data-nav="${n.id}">
+            <span>${n.id === 'summary' ? '📊' : n.id === 'cards' ? '💳' : n.id === 'digital' ? '📱' : n.id === 'compare' ? '📈' : n.id === 'dayvs' ? '⚖️' : n.id === 'table' ? '📋' : '⚙️'}</span>
+            <span class="nav-lbl">${n.label}</span>
+          </button>
+        `).join('')}
+        <div class="spacer"></div>
+        <button class="nav-btn boxed" data-act="toggleNav">
+          <span>${S.navOpen ? '◀' : '▶'}</span>
+          <span class="nav-lbl">${S.navOpen ? 'Collapse' : 'Expand'}</span>
+        </button>
       </div>
-      
-      <div class="card">
-        <h3>📋 Field Status</h3>
-        <div class="field-list">
-          ${REQUIRED_COLS.map(field => {
-            const info = status[field] || { found: false };
-            const isFound = info.found;
-            return `
-              <div class="field-item">
-                <span class="status-icon">${isFound ? '✅' : '❌'}</span>
-                <span class="field-name">${field}</span>
-                <span class="field-status ${isFound ? 'found' : 'missing'}">${isFound ? 'Found ✓' : 'Missing ✗'}</span>
-                <span class="field-detail">${isFound ? info.originalName : 'Not found'}</span>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </div>
-      
-      ${vr.errors?.length > 0 ? `
-        <div class="card" style="border-color:var(--error);">
-          <h3 style="color:var(--error);">❌ Errors</h3>
-          ${vr.errors.map(e => `<div style="padding:4px 0;">• ${e}</div>`).join('')}
-        </div>
-      ` : ''}
-      
-      ${vr.warnings?.length > 0 ? `
-        <div class="card" style="border-color:var(--warn);">
-          <h3 style="color:var(--warn);">⚠️ Warnings</h3>
-          ${vr.warnings.map(w => `<div style="padding:4px 0;">• ${w}</div>`).join('')}
-        </div>
-      ` : ''}
-      
-      <div class="card">
-        <h3>📊 Data Preview</h3>
-        ${vr.dataPreview?.length > 0 ? `
-          <div style="overflow-x:auto;">
-            <table style="width:100%;border-collapse:collapse;font-size:12px;">
-              <thead>
-                <tr>
-                  <th style="text-align:left;padding:8px;">Field</th>
-                  ${vr.dataPreview[0]?.samples.map((_, i) => `<th style="text-align:left;padding:8px;">Row ${i+1}</th>`).join('')}
-                </tr>
-              </thead>
-              <tbody>
-                ${vr.dataPreview.map(col => `
-                  <tr>
-                    <td style="padding:6px 8px;font-weight:600;">${col.name}</td>
-                    ${col.samples.map(s => `<td style="padding:6px 8px;font-family:monospace;font-size:11px;">${s}</td>`).join('')}
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        ` : '<p>No data preview available</p>'}
-      </div>
-      
-      <div class="card">
-        <h3>🎨 Theme</h3>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          ${THEME_KEYS.map(k => `
-            <button class="chip click ${S.theme === k ? 'on' : ''}" data-act="theme" data-arg="${k}">${THEMES[k].label}</button>
-          `).join('')}
-        </div>
-      </div>
-      
-      <div class="card">
-        <h3>🔄 Actions</h3>
-        <div class="btn-group">
-          <button class="retry-btn" onclick="window.location.reload()">🔄 Reload Data</button>
-          <button class="retry-btn" style="background:var(--good);" onclick="S.scope='L7';renderTab('summary');">📊 Go to Summary</button>
-        </div>
+      <div class="mainwrap">
+        <main id="mainContent">
+          <header class="top">
+            <div>
+              <div class="eyebrow">COMMERCIAL BANK OF CEYLON PLC</div>
+              <h1 class="title" id="pageTitle">${NAV.find(n => n.id === S.tab)?.label || 'Summary'}</h1>
+            </div>
+            <div class="scopebar">
+              <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:12px;background:${statusColor}22;color:${statusColor};font-weight:600;font-size:12px;">
+                ${statusIcon} ${statusText}
+              </span>
+              ${SCOPES.map(s => chip(s.label, { on: S.scope === s.key, act: 'scope', arg: s.key })).join('')}
+              <span class="scopeinfo">${S.shapedData?.dates?.length || 0} days</span>
+            </div>
+          </header>
+          <div id="tabContent">${tabSummary()}</div>
+        </main>
+        <footer>
+          <span class="brandline"><span class="dot" style="background:${hasData ? 'var(--good)' : 'var(--warn)'}"></span> ${hasData ? 'Live' : 'Waiting for data'} · ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+          <span class="sep">|</span>
+          <span>${hasData ? fmtFull(S.shapedData?.recs?.length || 0) + ' transactions' : 'No data loaded'}</span>
+          <span class="right">
+            <span>Theme: ${THEMES[S.theme]?.label || 'Light'}</span>
+            ${hasWarnings ? `<span class="chip warnc" style="cursor:pointer" data-act="gotoSettings">⚠️ ${validationResult.warnings.length} warnings</span>` : ''}
+            ${hasErrors ? `<span class="chip bad" style="cursor:pointer" data-act="gotoSettings">❌ ${validationResult.errors.length} errors</span>` : ''}
+          </span>
+        </footer>
       </div>
     </div>
   `;
+
+  // Attach event listeners
+  document.querySelectorAll('[data-nav]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      S.tab = btn.dataset.nav;
+      renderTab(S.tab);
+    });
+  });
+
+  document.querySelectorAll('[data-act="scope"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      S.scope = btn.dataset.arg;
+      renderTab(S.tab);
+    });
+  });
+
+  document.querySelector('[data-act="toggleNav"]')?.addEventListener('click', () => {
+    S.navOpen = !S.navOpen;
+    document.getElementById('rail')?.classList.toggle('closed');
+  });
+
+  document.querySelectorAll('[data-act="gotoSettings"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      S.tab = 'settings';
+      renderTab('settings');
+    });
+  });
+
+  // Initial render
+  renderTab(S.tab);
 }
 
-/* =========================== GLOBAL STATE ========================== */
-const S = {
-  tab: 'summary',
-  scope: 'L7',
-  theme: 'light',
-  navOpen: true,
-  cards: { cats: [...CARD_CATS] },
-  digital: { sel: DIGITAL_CATS.slice(0, 3) },
-  donut: { path: [], sel: null },
-  mMode: 'all',
-  compare: { customDates: false, customCats: false, showSubs: false, chartType: 'bar', selDates: [], selCats: ['CARDS_ALL', 'DIGITAL_ALL'], from: '', to: '' },
-  dayvs: { a: null, b: null },
-  table: { group: 'ALL', q: '', sortK: 'tot', sortDir: -1 },
-  data: null,
-  ready: false,
-  validationResult: null
-};
+/* =========================== MAIN APP ========================== */
+async function initApp(){
+  const root = document.getElementById('root');
+  
+  try {
+    root.innerHTML = `<div class="boot">🔍 LOADING DATA SOURCE</div>`;
 
-function chip(label, opts = {}) {
-  const classes = ['chip'];
-  if(opts.small !== false) classes.push('sm');
-  if(opts.on) classes.push('on');
-  if(opts.act) classes.push('click');
-  if(opts.tone) classes.push(opts.tone);
-  return `<span class="${classes.join(' ')}" ${opts.act ? `data-act="${opts.act}"` : ''} ${opts.arg ? `data-arg="${opts.arg}"` : ''}>${label}</span>`;
+    // Try to get Tableau data
+    let cols = null;
+    let rows = [];
+    const tableauData = await readWorksheet();
+    
+    if(tableauData && tableauData.cols && tableauData.cols.length > 0) {
+      cols = tableauData.cols;
+      rows = tableauData.rows || [];
+      console.log('✅ Tableau data loaded:', rows.length, 'rows,', cols.length, 'columns');
+    } else {
+      console.warn('⚠️ No Tableau data available - dashboard will show "No Data" state');
+      cols = [];
+      rows = [];
+    }
+
+    // Validate the data
+    const validationResult = validateData(cols, rows);
+    console.log('Validation result:', validationResult);
+    
+    // Load dashboard (always loads, even without data)
+    loadDashboard(cols, rows, validationResult);
+
+  } catch(err) {
+    console.error('Fatal error:', err);
+    // Still load dashboard with error state
+    const validationResult = {
+      valid: false,
+      errors: [err.message || 'Unknown error occurred'],
+      warnings: [],
+      fieldStatus: {},
+      dataPreview: [],
+      stats: {},
+      hasData: false
+    };
+    loadDashboard([], [], validationResult);
+  }
 }
 
 /* =========================== START APP ========================== */
