@@ -4,16 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Digital &amp; Card Transaction Statistics — Commercial Bank</title>
-<!-- =========================================================================
-  Digital & Card Transaction Statistics · Commercial Bank of Ceylon PLC
-  Single standalone HTML — vanilla JS, zero frameworks, zero build step.
-  Only external dependency: the Tableau Extensions API script below.
-  Data contract (fields on Detail; SUM()/DAY()/ATTR() wrappers stripped,
-  %null% sanitised):  TXN_DATE · GROUP (CARD|DIGITAL|QPLUS) · CATEGORY ·
-  SUB_CATEGORY · APPROVED_COUNT · DECLINED_COUNT
-  Parameter: pl_theme (String, default "light") persists the theme.
-  Developed by AI & Data Science.
-========================================================================== -->
 <script src="https://cdn.jsdelivr.net/gh/tableau/extensions-api/lib/tableau.extensions.1.latest.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
@@ -44,11 +34,9 @@ input:focus{border-color:var(--accent)!important}
 @keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes slideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes progressBar{from{width:0%}to{width:100%}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
 .app{display:flex;min-height:100vh;position:relative}
-/* ------------------------------ side rail ------------------------------ */
 .rail{
   width:214px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);
   display:flex;flex-direction:column;padding:16px 10px;gap:4px;position:sticky;top:0;height:100vh;
@@ -69,7 +57,6 @@ input:focus{border-color:var(--accent)!important}
 .nav-btn.on{background:var(--surface2);border-left-color:var(--accent);color:var(--text)}
 .nav-btn.boxed{border:1px solid var(--border);background:var(--surface2);border-left-width:1px;margin-bottom:8px}
 .rail .spacer{margin-top:auto}
-/* ------------------------------- layout -------------------------------- */
 .mainwrap{flex:1;min-width:0;display:flex;flex-direction:column}
 main{flex:1;padding:24px 30px 14px}
 header.top{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
@@ -86,7 +73,6 @@ footer .dot{width:7px;height:7px;border-radius:50%;display:inline-block;animatio
 footer .right{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 footer b{color:var(--text)} footer .brandline{display:inline-flex;align-items:center;gap:7px}
 footer .sep{opacity:.4}
-/* -------------------------------- atoms -------------------------------- */
 .card{
   background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;
   box-shadow:var(--shadow);animation:fadeUp .5s cubic-bezier(.2,.7,.2,1) both;
@@ -367,25 +353,122 @@ kbd{font:700 11px 'JetBrains Mono',monospace;padding:3px 8px;border-radius:6px;b
 /* =========================== CONSTANTS ========================== */
 const REQUIRED_COLS = ["TXN_DATE","GROUP","CATEGORY","SUB_CATEGORY","APPROVED_COUNT","DECLINED_COUNT"];
 const NULLISH = new Set(["%null%","null","(null)","(blank)","%missing%","undefined","nan"]);
+const CARD_CATS=["CBC Cards at CBC Devices","CBC Issuer Txns at Other ATMs","CBC Issuer Txns at Other POS","Other Bank Cards Acquired at CBC ATMs","Other Bank Cards Acquired at CBC POS"];
+const QPLUS_CAT="Q+ Transactions", DECLINED_CAT="Declined Card Transactions";
+const DIGITAL_CATS=["CEFTS Inward","CEFTS Outward","Inward e-Remittances","PayMaster","ComBank Digital — Financial","ComBank Digital — Non-Financial","Flash — Financial"];
+const SCHEMES=["LankaPay","Visa","MasterCard","UnionPay"];
+const THEME_PARAM="pl_theme";
+const THEMES={
+ light:{label:"Light",mode:"light",blur:"none",bg:"#f5f7fb",bgImage:"none",surface:"#ffffff",surface2:"#f0f3f9",border:"#e3e8f2",text:"#0e1626",sub:"#63708c",accent:"#3b5bdb",accent2:"#0ca678",good:"#0ca678",bad:"#e03131",warn:"#e8890c",donut:["#3b5bdb","#0ca678","#7048e8","#f08c00","#d6336c","#1098ad","#868e96"],glow:"none",shadow:"0 6px 24px rgba(14,22,38,.07)",heroGrad:"linear-gradient(90deg,#3b5bdb,#1098ad)"},
+ dark:{label:"Dark",mode:"dark",blur:"none",bg:"#0c111c",bgImage:"none",surface:"#131a2a",surface2:"#1b2438",border:"#26314a",text:"#e9eef8",sub:"#94a1bd",accent:"#6d8dff",accent2:"#31d0a5",good:"#31d0a5",bad:"#ff6b6b",warn:"#ffb347",donut:["#6d8dff","#31d0a5","#a78bfa","#ffa94d","#f783ac","#3bc9db","#8a94a6"],glow:"none",shadow:"0 10px 32px rgba(0,0,0,.5)",heroGrad:"linear-gradient(90deg,#6d8dff,#3bc9db)"},
+ glass:{label:"Glassmorphism",mode:"dark",blur:"blur(18px) saturate(150%)",bg:"#070b18",bgImage:"radial-gradient(900px 620px at 12% 6%, rgba(96,132,255,.34), transparent 60%),radial-gradient(760px 560px at 88% 18%, rgba(78,224,193,.24), transparent 62%),radial-gradient(820px 640px at 62% 98%, rgba(167,139,250,.26), transparent 60%)",surface:"rgba(255,255,255,.065)",surface2:"rgba(255,255,255,.115)",border:"rgba(255,255,255,.15)",text:"#f1f5ff",sub:"#a8b6da",accent:"#7aa2ff",accent2:"#4ee0c1",good:"#4ee0c1",bad:"#ff7a90",warn:"#ffc861",donut:["#7aa2ff","#4ee0c1","#b79cff","#ffb066","#ff8fbf","#5fd8f0","#9aa7c7"],glow:"none",shadow:"0 8px 32px rgba(0,0,0,.38)",heroGrad:"linear-gradient(90deg,#7aa2ff,#4ee0c1)"},
+ neon:{label:"Neon",mode:"dark",blur:"none",bg:"#060714",bgImage:"none",surface:"#0c0e22",surface2:"#131634",border:"#20255c",text:"#eef3ff",sub:"#8d97d6",accent:"#00e5ff",accent2:"#ff2ec4",good:"#39ff9c",bad:"#ff3d6e",warn:"#ffd23d",donut:["#00e5ff","#ff2ec4","#39ff9c","#ffd23d","#8f6bff","#ff8a3d","#6474d6"],glow:"0 0 16px",shadow:"0 0 26px rgba(0,229,255,.16)",heroGrad:"linear-gradient(90deg,#00e5ff,#ff2ec4)"},
+ slate:{label:"Executive Slate",mode:"dark",blur:"none",bg:"#11151a",bgImage:"none",surface:"#181e25",surface2:"#202832",border:"#2c3742",text:"#eaeff3",sub:"#9cabb7",accent:"#52b9ae",accent2:"#cda94e",good:"#52b9ae",bad:"#e06a5e",warn:"#cda94e",donut:["#52b9ae","#cda94e","#7f9fb8","#b87f9f","#6aa66a","#c98a5e","#8a94a6"],glow:"none",shadow:"0 10px 30px rgba(0,0,0,.42)",heroGrad:"linear-gradient(90deg,#52b9ae,#cda94e)"},
+ royal:{label:"Royal Gold",mode:"light",blur:"none",bg:"#f8f5ee",bgImage:"none",surface:"#fffdf8",surface2:"#f2eddf",border:"#e5ddc6",text:"#221d12",sub:"#71684f",accent:"#1f3a93",accent2:"#b8860b",good:"#2e7d32",bad:"#b3261e",warn:"#a06000",donut:["#1f3a93","#b8860b","#5e35b1","#00838f","#ad1457","#546e7a","#8a94a6"],glow:"none",shadow:"0 8px 26px rgba(34,29,18,.10)",heroGrad:"linear-gradient(90deg,#1f3a93,#b8860b)"},
+};
+const THEME_KEYS=Object.keys(THEMES);
+const SCOPES=[{key:"D1",label:"Yesterday"},{key:"L7",label:"Last 7 days"},{key:"L30",label:"Last 30 days"},{key:"CM",label:"Current month"},{key:"LM",label:"Last month"}];
+const NAV=[{id:"summary",label:"Summary"},{id:"cards",label:"Cards"},{id:"digital",label:"Digital"},{id:"compare",label:"Compare"},{id:"dayvs",label:"Day vs Day"},{id:"table",label:"Table View"},{id:"settings",label:"Settings"}];
 
-function cleanFieldName(name){
-  let n = String(name || "").trim();
-  for(let i = 0; i < 3; i++){
-    const m = n.match(/^[A-Za-z_]{2,12}\((.*)\)$/);
-    if(!m) break;
-    n = m[1].trim();
+/* ================================ UTILS ================================= */
+const nfInt=new Intl.NumberFormat("en-US");
+const esc=s=>String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+function fmtN(v){if(v==null||isNaN(v))return"–";const a=Math.abs(v);if(a>=1e6)return(v/1e6).toFixed(a>=1e7?1:2)+"M";if(a>=1e5)return(v/1e3).toFixed(1)+"K";return nfInt.format(Math.round(v));}
+function fmtFull(v){return v==null||isNaN(v)?"–":nfInt.format(Math.round(v));}
+function fmtPct(v,d=1){return v==null||isNaN(v)?"–":v.toFixed(d)+"%";}
+function fmtDate(iso){return iso?new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"}):"—";}
+function fmtDateShort(iso){return iso?new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short"}):"—";}
+function weekdayName(iso){return iso?new Date(iso+"T00:00:00").toLocaleDateString("en-GB",{weekday:"long"}):"—";}
+function shiftDays(iso,n){const d=new Date(iso+"T00:00:00");d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function shiftMonth(ym,n){const[y,m]=ym.split("-").map(Number);const d=new Date(y,m-1+n,1);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;}
+function toISO(raw){if(raw==null||raw==="")return null;const d=new Date(raw);if(isNaN(d))return null;return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
+function deltaPct(cur,prev){if(prev==null||prev===0||cur==null)return null;return((cur-prev)/prev)*100;}
+function scopeDates(all,key){
+  if(!all.length)return{dates:[],prev:[]};
+  const max=all[all.length-1],mo=d=>d.slice(0,7);
+  if(key==="D1"){const i=all.length-1;return{dates:[max],prev:i>0?[all[i-1]]:[]};}
+  if(key==="CM"){const m=mo(max),pm=shiftMonth(m,-1);return{dates:all.filter(d=>mo(d)===m),prev:all.filter(d=>mo(d)===pm)};}
+  if(key==="LM"){const pm=shiftMonth(mo(max),-1),pp=shiftMonth(pm,-1);return{dates:all.filter(d=>mo(d)===pm),prev:all.filter(d=>mo(d)===pp)};}
+  const span=key==="L30"?30:7,from=shiftDays(max,-(span-1)),pTo=shiftDays(from,-1),pFrom=shiftDays(from,-span);
+  return{dates:all.filter(d=>d>=from),prev:all.filter(d=>d>=pFrom&&d<=pTo)};
+}
+function contextDates(all,sc,n=7){if(sc.length>1)return sc;if(!sc.length)return[];const i=all.indexOf(sc[0]);return all.slice(Math.max(0,i-n+1),i+1);}
+function missingDates(dates){if(dates.length<2)return[];const out=[],have=new Set(dates),end=dates[dates.length-1];let cur=dates[0];while(cur<end){if(!have.has(cur))out.push(cur);cur=shiftDays(cur,1);}return out;}
+function detectAnomalies(s){
+  if(!s||s.length<6)return[];const chg=[];
+  for(let i=1;i<s.length;i++){const p=s[i-1].v,c=s[i].v;chg.push(p>0?(c-p)/p:0);}
+  const mean=chg.reduce((a,b)=>a+b,0)/chg.length;
+  const sd=Math.sqrt(chg.reduce((a,b)=>a+(b-mean)**2,0)/chg.length)||1e-9;
+  const out=[];chg.forEach((c,i)=>{const z=(c-mean)/sd;if(Math.abs(z)>=1.8&&Math.abs(c)>=.08)out.push({idx:i+1,date:s[i+1].d,pct:c*100,dir:c>0?"up":"down"});});
+  return out;
+}
+function linReg(s){const n=s?.length||0;if(n<2)return 0;let sx=0,sy=0,sxy=0,sxx=0;s.forEach((p,i)=>{sx+=i;sy+=p.v;sxy+=i*p.v;sxx+=i*i;});return(n*sxy-sx*sy)/(n*sxx-sx*sx||1);}
+function smoothPath(pts){
+  const n=pts.length;if(!n)return"";if(n===1)return`M${pts[0].x},${pts[0].y}`;
+  if(n===2)return`M${pts[0].x},${pts[0].y} L${pts[1].x},${pts[1].y}`;
+  const dx=[],dy=[],m=[];
+  for(let i=0;i<n-1;i++){dx[i]=pts[i+1].x-pts[i].x;dy[i]=pts[i+1].y-pts[i].y;m[i]=dy[i]/(dx[i]||1e-9);}
+  const t=[m[0]];
+  for(let i=1;i<n-1;i++){if(m[i-1]*m[i]<=0)t[i]=0;else{const w1=2*dx[i]+dx[i-1],w2=dx[i]+2*dx[i-1];t[i]=(w1+w2)/(w1/m[i-1]+w2/m[i]);}}
+  t[n-1]=m[n-2];
+  let d=`M${pts[0].x.toFixed(2)},${pts[0].y.toFixed(2)}`;
+  for(let i=0;i<n-1;i++){
+    const c1x=pts[i].x+dx[i]/3,c1y=pts[i].y+t[i]*dx[i]/3,c2x=pts[i+1].x-dx[i]/3,c2y=pts[i+1].y-t[i+1]*dx[i]/3;
+    d+=` C${c1x.toFixed(2)},${c1y.toFixed(2)} ${c2x.toFixed(2)},${c2y.toFixed(2)} ${pts[i+1].x.toFixed(2)},${pts[i+1].y.toFixed(2)}`;
   }
+  return d;
+}
+let __gid=0;const gid=p=>p+(++__gid);
+function hexToRgba(hex,a){const h=String(hex||"").replace("#","");if(h.length!==6)return`rgba(120,140,200,${a})`;const n=parseInt(h,16);return`rgba(${n>>16&255},${n>>8&255},${n&255},${a})`;}
+
+/* ============================== DATA LAYER =============================== */
+function cleanFieldName(name){
+  let n=String(name||"").trim();
+  for(let i=0;i<3;i++){const m=n.match(/^[A-Za-z_]{2,12}\((.*)\)$/);if(!m)break;n=m[1].trim();}
   return n.replace(/\s*\(copy\)\s*$/i,"").trim().toUpperCase();
 }
+function cleanText(dv){const raw=dv?.value??dv?.formattedValue??"";const s=String(raw).trim();return NULLISH.has(s.toLowerCase())?"":s;}
+const idxOf=(cols,name)=>cols.findIndex(c=>cleanFieldName(c.fieldName)===name.toUpperCase());
 
-function cleanText(dv){
-  const raw = dv?.value ?? dv?.formattedValue ?? "";
-  const s = String(raw).trim();
-  return NULLISH.has(s.toLowerCase()) ? "" : s;
+async function readWorksheet(){
+  const tb=window.tableau;
+  if(!tb || !tb.extensions) {
+    console.warn('Tableau Extensions not available, using sample data');
+    return null;
+  }
+  try {
+    await tb.extensions.initializeAsync();
+    const dash = tb.extensions.dashboardContent?.dashboard;
+    const ws = dash ? dash.worksheets[0] : tb.extensions.worksheetContent?.worksheet;
+    if(!ws) return null;
+    const reader = await ws.getSummaryDataReaderAsync(undefined,{ignoreSelection:true});
+    const rows=[];let cols=null;
+    for(let p=0;p<reader.pageCount;p++){const page=await reader.getPageAsync(p);if(!cols)cols=page.columns;page.data.forEach(r=>rows.push(r));}
+    await reader.releaseAsync();
+    return {cols,rows,wsName:ws.name};
+  } catch(e) {
+    console.warn('Error reading worksheet:', e);
+    return null;
+  }
 }
 
-function idxOf(cols, name){
-  return cols.findIndex(c => cleanFieldName(c.fieldName) === name.toUpperCase());
+function shapeData(cols,rows){
+  const missing=REQUIRED_COLS.filter(c=>idxOf(cols,c)<0);
+  if(missing.length)return{error:missing,found:cols.map(c=>c.fieldName)};
+  const ix={};REQUIRED_COLS.forEach(c=>ix[c]=idxOf(cols,c));
+  const recs=[];
+  rows.forEach(r=>{
+    const date=toISO(cleanText(r[ix.TXN_DATE])||r[ix.TXN_DATE]?.value);if(!date)return;
+    const group=cleanText(r[ix.GROUP]).toUpperCase();
+    const cat=cleanText(r[ix.CATEGORY]);
+    const sub=cleanText(r[ix.SUB_CATEGORY]);
+    const ap=Number(r[ix.APPROVED_COUNT]?.value)||0, de=Number(r[ix.DECLINED_COUNT]?.value)||0;
+    if(!group||!cat)return;
+    recs.push({date,group,cat,sub,ap,de,tot:ap+de});
+  });
+  recs.sort((a,b)=>a.date<b.date?-1:1);
+  const dates=[...new Set(recs.map(r=>r.date))].sort();
+  return{recs,dates};
 }
 
 /* =========================== VALIDATION ENGINE ========================== */
@@ -399,12 +482,15 @@ function validateData(cols, rows){
     stats: {}
   };
 
-  // 1. Check required fields
-  const missingFields = [];
+  if(!cols || cols.length === 0){
+    results.valid = false;
+    results.errors.push("No columns found in the data source");
+    return results;
+  }
+
   REQUIRED_COLS.forEach(req => {
     const idx = idxOf(cols, req);
     if(idx === -1){
-      missingFields.push(req);
       results.fieldStatus[req] = { found: false, index: -1 };
     } else {
       const col = cols[idx];
@@ -419,18 +505,18 @@ function validateData(cols, rows){
     }
   });
 
+  const missingFields = REQUIRED_COLS.filter(c => !results.fieldStatus[c]?.found);
   if(missingFields.length > 0){
     results.valid = false;
     results.errors.push("Missing required fields: " + missingFields.join(', '));
   }
 
-  // 2. Check if any data exists
   if(rows.length === 0){
     results.valid = false;
     results.errors.push("No data rows found in the worksheet");
   }
 
-  // 3. Check data types and values
+  // Check data types and values
   const numericIssues = [];
   const dateIssues = [];
   const groupIssues = [];
@@ -487,7 +573,7 @@ function validateData(cols, rows){
   results.stats.missingFields = missingFields;
   results.stats.allFields = cols.map(c => c.fieldName);
 
-  // 4. Build data preview (first 3 rows)
+  // Build data preview
   const previewCols = REQUIRED_COLS.filter(c => results.fieldStatus[c]?.found);
   previewCols.forEach(c => {
     const idx = results.fieldStatus[c].index;
@@ -702,37 +788,15 @@ async function initApp(){
 
     // Try to get Tableau data
     let cols, rows;
-    try {
-      const tb = window.tableau;
-      if(!tb || !tb.extensions){
-        throw new Error('Tableau Extensions API not loaded.');
-      }
-
-      await tb.extensions.initializeAsync();
-      const dash = tb.extensions.dashboardContent?.dashboard;
-      const ws = dash ? dash.worksheets[0] : tb.extensions.worksheetContent?.worksheet;
-      
-      if(!ws){
-        throw new Error('No worksheet found.');
-      }
-
-      const reader = await ws.getSummaryDataReaderAsync(undefined, { ignoreSelection: true });
-      const allRows = [];
-      for(let p = 0; p < reader.pageCount; p++){
-        const page = await reader.getPageAsync(p);
-        if(!cols) cols = page.columns;
-        page.data.forEach(r => allRows.push(r));
-      }
-      await reader.releaseAsync();
-      rows = allRows;
-
-      if(!cols || cols.length === 0){
-        throw new Error('No columns found.');
-      }
-
-    } catch(err) {
-      // Fallback: use sample data for testing if Tableau not available
-      console.warn('Tableau data not available, using sample data for testing:', err.message);
+    const tableauData = await readWorksheet();
+    
+    if(tableauData && tableauData.cols && tableauData.rows && tableauData.rows.length > 0) {
+      cols = tableauData.cols;
+      rows = tableauData.rows;
+      console.log('✅ Tableau data loaded:', rows.length, 'rows');
+    } else {
+      console.warn('⚠️ No Tableau data available, using sample data for demonstration');
+      // Use sample data that matches the required schema
       cols = [
         { fieldName: 'TXN_DATE' },
         { fieldName: 'GROUP' },
@@ -761,7 +825,9 @@ async function initApp(){
     // Listen for continue event
     document.addEventListener('validationContinue', () => {
       if(validationResult.valid){
-        loadDashboard(cols, rows);
+        // Store data in global state
+        window.APP_DATA = { cols, rows, validationResult };
+        loadFullDashboard(cols, rows, validationResult);
       }
     });
 
@@ -798,45 +864,371 @@ async function initApp(){
   }
 }
 
-/* =========================== DASHBOARD LOADER ========================== */
-function loadDashboard(cols, rows){
-  // This is where the full dashboard would load
+/* =========================== FULL DASHBOARD ========================== */
+function loadFullDashboard(cols, rows, validationResult){
   const root = document.getElementById('root');
+  
+  // Process the data
+  const shaped = shapeData(cols, rows);
+  if(shaped.error){
+    root.innerHTML = `<div class="errwrap"><div class="errcard"><h2>Data Error</h2><p>Missing fields: ${shaped.error.join(', ')}</p><button onclick="location.reload()">Retry</button></div></div>`;
+    return;
+  }
+
+  const data = shaped;
+  const allDates = data.dates;
+  const allRecs = data.recs;
+  const sc = scopeDates(allDates, S.scope);
+  const scDates = sc.dates;
+  const prevDates = sc.prev;
+  const prevRecs = allRecs.filter(r => prevDates.includes(r.date));
+  const recs = allRecs.filter(r => scDates.includes(r.date));
+  const ctxDates = contextDates(allDates, scDates);
+
+  // Store in global V for tab functions
+  window.V = { recs, scDates, prevRecs, prevDates, allRecs, allDates, ctxDates };
+  window.S = { 
+    ...S, 
+    data: data,
+    ready: true,
+    validationResult: validationResult
+  };
+
+  // Build the full dashboard HTML
   root.innerHTML = `
-    <div style="min-height:100vh;background:var(--bg);display:grid;place-items:center;padding:20px;">
-      <div class="validation-container" style="max-width:600px;text-align:center;">
-        <div style="font-size:48px;margin-bottom:12px;">🚀</div>
-        <h2 style="margin:0 0 8px 0;">Dashboard Ready!</h2>
-        <div style="color:var(--sub);font-size:14px;margin-bottom:16px;">
-          Data validated successfully with ${rows.length} rows and ${cols.length} columns.
-          <br>Loading the full dashboard...
+    <div class="app">
+      <div class="rail" id="rail">
+        <div class="brand">
+          <div style="width:28px;height:28px;border-radius:8px;background:var(--heroGrad);display:grid;place-items:center;color:#fff;font:700 13px Sora,sans-serif;flex-shrink:0">CB</div>
+          <div class="brand-txt"><b>Commercial Bank</b><span>Transaction Analytics</span></div>
         </div>
-        <div class="progress-container">
-          <div class="progress-bar" style="width:100%;"></div>
-        </div>
-        <div style="margin-top:16px;font-size:12px;color:var(--sub);">
-          <span style="display:inline-block;background:var(--surface2);padding:4px 12px;border-radius:6px;font-family:'JetBrains Mono',monospace;">
-            ✅ ${cols.map(c => c.fieldName).join(' · ')}
+        ${NAV.map(n => `
+          <button class="nav-btn ${S.tab === n.id ? 'on' : ''}" data-nav="${n.id}">
+            <span>${n.id === 'summary' ? '📊' : n.id === 'cards' ? '💳' : n.id === 'digital' ? '📱' : n.id === 'compare' ? '📈' : n.id === 'dayvs' ? '⚖️' : n.id === 'table' ? '📋' : '⚙️'}</span>
+            <span class="nav-lbl">${n.label}</span>
+          </button>
+        `).join('')}
+        <div class="spacer"></div>
+        <button class="nav-btn boxed" data-act="toggleNav">
+          <span>${S.navOpen ? '◀' : '▶'}</span>
+          <span class="nav-lbl">${S.navOpen ? 'Collapse' : 'Expand'}</span>
+        </button>
+      </div>
+      <div class="mainwrap">
+        <main id="mainContent">
+          <header class="top">
+            <div><div class="eyebrow">COMMERCIAL BANK OF CEYLON PLC</div>
+            <h1 class="title" id="pageTitle">${NAV.find(n => n.id === S.tab)?.label || 'Summary'}</h1></div>
+            <div class="scopebar">
+              ${SCOPES.map(s => chip(s.label, { on: S.scope === s.key, act: 'scope', arg: s.key })).join('')}
+              <span class="scopeinfo">${scDates.length} days · ${fmtDate(scDates[0])} – ${fmtDate(scDates[scDates.length-1])}</span>
+            </div>
+          </header>
+          <div id="tabContent">${tabSummary()}</div>
+        </main>
+        <footer>
+          <span class="brandline"><span class="dot" style="background:var(--good)"></span> Live · ${new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+          <span class="sep">|</span>
+          <span>${fmtFull(data.recs.length)} transactions · ${data.dates.length} days</span>
+          <span class="right">
+            <span>Theme: ${THEMES[S.theme]?.label || 'Light'}</span>
+            ${validationResult.warnings.length > 0 ? `<span class="chip warnc" style="cursor:pointer" data-act="gotoSettings">⚠️ ${validationResult.warnings.length} warnings</span>` : ''}
+            ${validationResult.errors.length > 0 ? `<span class="chip bad" style="cursor:pointer" data-act="gotoSettings">❌ ${validationResult.errors.length} errors</span>` : ''}
           </span>
-        </div>
-        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
-          ${rows.slice(0, 3).map(row => `
-            <span style="background:var(--surface2);padding:2px 8px;border-radius:4px;font-size:11px;font-family:'JetBrains Mono',monospace;">
-              ${row.map(c => c.value).join(' | ')}
-            </span>
-          `).join('')}
-        </div>
+        </footer>
       </div>
     </div>
   `;
 
-  // Note: The full dashboard would load here
-  console.log('Dashboard ready with:', { cols, rows });
+  // Attach event listeners
+  attachEventListeners();
 }
 
-/* =========================== ESCAPE HELPER ========================== */
-function esc(s){
-  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* =========================== EVENT HANDLERS ========================== */
+function attachEventListeners(){
+  // Navigation
+  document.querySelectorAll('[data-nav]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.nav;
+      S.tab = tab;
+      renderTab(tab);
+    });
+  });
+
+  // Scope
+  document.querySelectorAll('[data-act="scope"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      S.scope = btn.dataset.arg;
+      renderTab(S.tab);
+    });
+  });
+
+  // Toggle nav
+  document.querySelector('[data-act="toggleNav"]')?.addEventListener('click', () => {
+    S.navOpen = !S.navOpen;
+    document.getElementById('rail')?.classList.toggle('closed');
+  });
+
+  // Go to settings
+  document.querySelectorAll('[data-act="gotoSettings"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      S.tab = 'settings';
+      renderTab('settings');
+    });
+  });
+
+  // Chip clicks for tabs
+  document.querySelectorAll('.chip.click[data-act]').forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      const act = chip.dataset.act;
+      const arg = chip.dataset.arg;
+      handleAction(act, arg, chip);
+    });
+  });
+}
+
+function renderTab(tabId){
+  // Update nav buttons
+  document.querySelectorAll('[data-nav]').forEach(btn => {
+    btn.classList.toggle('on', btn.dataset.nav === tabId);
+  });
+  
+  // Update title
+  const title = document.getElementById('pageTitle');
+  if(title) title.textContent = NAV.find(n => n.id === tabId)?.label || 'Summary';
+  
+  // Render content
+  const content = document.getElementById('tabContent');
+  if(!content) return;
+  
+  switch(tabId){
+    case 'summary': content.innerHTML = tabSummary(); break;
+    case 'cards': content.innerHTML = tabCards(); break;
+    case 'digital': content.innerHTML = tabDigital(); break;
+    case 'compare': content.innerHTML = tabCompare(); break;
+    case 'dayvs': content.innerHTML = tabDayVs(); break;
+    case 'table': content.innerHTML = tabTable(); break;
+    case 'settings': content.innerHTML = tabSettings(); break;
+    default: content.innerHTML = tabSummary();
+  }
+  
+  // Re-attach event listeners for new content
+  document.querySelectorAll('.chip.click[data-act]').forEach(chip => {
+    chip.addEventListener('click', (e) => {
+      const act = chip.dataset.act;
+      const arg = chip.dataset.arg;
+      handleAction(act, arg, chip);
+    });
+  });
+}
+
+function handleAction(act, arg, element){
+  console.log('Action:', act, arg);
+  
+  switch(act){
+    case 'theme':
+      S.theme = arg;
+      applyTheme(arg);
+      renderTab(S.tab);
+      break;
+    case 'scope':
+      S.scope = arg;
+      renderTab(S.tab);
+      break;
+    case 'mmode':
+      S.mMode = arg;
+      renderTab('summary');
+      break;
+    case 'cardcat':
+      const idx = S.cards.cats.indexOf(arg);
+      if(idx > -1) {
+        if(S.cards.cats.length > 1) {
+          S.cards.cats.splice(idx, 1);
+        }
+      } else {
+        S.cards.cats.push(arg);
+      }
+      renderTab('cards');
+      break;
+    case 'cardcatsAll':
+      S.cards.cats = S.cards.cats.length === CARD_CATS.length ? CARD_CATS.slice(0, 1) : [...CARD_CATS];
+      renderTab('cards');
+      break;
+    case 'digsel':
+      const di = S.digital.sel.indexOf(arg);
+      if(di > -1) {
+        if(S.digital.sel.length > 1) S.digital.sel.splice(di, 1);
+      } else {
+        S.digital.sel.push(arg);
+      }
+      renderTab('digital');
+      break;
+    case 'donutSeg':
+      S.donut.sel = arg;
+      renderTab(S.tab);
+      break;
+    case 'donutCrumb':
+      const level = parseInt(arg);
+      if(level < S.donut.path.length) {
+        S.donut.path = S.donut.path.slice(0, level);
+        S.donut.sel = null;
+      }
+      renderTab(S.tab);
+      break;
+    default:
+      console.log('Unhandled action:', act, arg);
+  }
+}
+
+function applyTheme(themeKey){
+  const t = THEMES[themeKey];
+  if(!t) return;
+  const root = document.documentElement;
+  Object.keys(t).forEach(key => {
+    root.style.setProperty('--' + key, t[key]);
+  });
+  S.theme = themeKey;
+}
+
+/* =========================== TAB FUNCTIONS (stubs for now) ========================== */
+function tabSummary(){
+  const V = window.V || {};
+  return `<div class="stack"><div class="card"><h3>Summary Dashboard</h3><p>Data loaded: ${V.allRecs?.length || 0} transactions across ${V.allDates?.length || 0} days</p>
+  <div class="grid-auto">
+    <div class="tile"><div style="font-weight:600">Validation Status</div><div>${window.S?.validationResult?.valid ? '✅ Valid' : '⚠️ Issues'}</div></div>
+    <div class="tile"><div style="font-weight:600">Fields Found</div><div>${window.S?.validationResult?.stats?.foundFields?.length || 0}/${REQUIRED_COLS.length}</div></div>
+  </div>
+  ${window.S?.validationResult?.warnings?.length > 0 ? `<div class="warning-box">${window.S.validationResult.warnings.map(w => '• ' + w).join('<br>')}</div>` : ''}
+  ${window.S?.validationResult?.errors?.length > 0 ? `<div class="error-box">${window.S.validationResult.errors.map(e => '• ' + e).join('<br>')}</div>` : ''}
+  </div></div>`;
+}
+
+function tabCards(){ return `<div class="card"><h3>Cards Dashboard</h3><p>Card transaction analytics</p></div>`; }
+function tabDigital(){ return `<div class="card"><h3>Digital Dashboard</h3><p>Digital transaction analytics</p></div>`; }
+function tabCompare(){ return `<div class="card"><h3>Compare Dashboard</h3><p>Comparison analytics</p></div>`; }
+function tabDayVs(){ return `<div class="card"><h3>Day vs Day Dashboard</h3><p>Day comparison analytics</p></div>`; }
+function tabTable(){ return `<div class="card"><h3>Table View</h3><p>Raw data view</p></div>`; }
+
+function tabSettings(){
+  const vr = window.S?.validationResult || {};
+  const stats = vr.stats || {};
+  const status = vr.fieldStatus || {};
+  
+  return `
+    <div class="stack">
+      <div class="card">
+        <h3>⚙️ Data Validation Report</h3>
+        <div style="margin:12px 0;padding:12px;background:var(--surface2);border-radius:8px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div><strong>Status:</strong> ${vr.valid ? '✅ Valid' : '❌ Invalid'}</div>
+            <div><strong>Total Rows:</strong> ${stats.totalRows || 0}</div>
+            <div><strong>Total Columns:</strong> ${stats.totalCols || 0}</div>
+            <div><strong>Fields Found:</strong> ${stats.foundFields?.length || 0}/${REQUIRED_COLS.length}</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3>📋 Field Status</h3>
+        <div class="field-list">
+          ${REQUIRED_COLS.map(field => {
+            const info = status[field] || { found: false };
+            const isFound = info.found;
+            return `
+              <div class="field-item">
+                <span class="status-icon">${isFound ? '✅' : '❌'}</span>
+                <span class="field-name">${field}</span>
+                <span class="field-status ${isFound ? 'found' : 'missing'}">${isFound ? 'Found ✓' : 'Missing ✗'}</span>
+                <span class="field-detail">${isFound ? info.originalName : 'Not found'}</span>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+      
+      ${vr.errors?.length > 0 ? `
+        <div class="card" style="border-color:var(--error);">
+          <h3 style="color:var(--error);">❌ Errors</h3>
+          ${vr.errors.map(e => `<div style="padding:4px 0;">• ${e}</div>`).join('')}
+        </div>
+      ` : ''}
+      
+      ${vr.warnings?.length > 0 ? `
+        <div class="card" style="border-color:var(--warn);">
+          <h3 style="color:var(--warn);">⚠️ Warnings</h3>
+          ${vr.warnings.map(w => `<div style="padding:4px 0;">• ${w}</div>`).join('')}
+        </div>
+      ` : ''}
+      
+      <div class="card">
+        <h3>📊 Data Preview</h3>
+        ${vr.dataPreview?.length > 0 ? `
+          <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;font-size:12px;">
+              <thead>
+                <tr>
+                  <th style="text-align:left;padding:8px;">Field</th>
+                  ${vr.dataPreview[0]?.samples.map((_, i) => `<th style="text-align:left;padding:8px;">Row ${i+1}</th>`).join('')}
+                </tr>
+              </thead>
+              <tbody>
+                ${vr.dataPreview.map(col => `
+                  <tr>
+                    <td style="padding:6px 8px;font-weight:600;">${col.name}</td>
+                    ${col.samples.map(s => `<td style="padding:6px 8px;font-family:monospace;font-size:11px;">${s}</td>`).join('')}
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        ` : '<p>No data preview available</p>'}
+      </div>
+      
+      <div class="card">
+        <h3>🎨 Theme</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          ${THEME_KEYS.map(k => `
+            <button class="chip click ${S.theme === k ? 'on' : ''}" data-act="theme" data-arg="${k}">${THEMES[k].label}</button>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3>🔄 Actions</h3>
+        <div class="btn-group">
+          <button class="retry-btn" onclick="window.location.reload()">🔄 Reload Data</button>
+          <button class="retry-btn" style="background:var(--good);" onclick="S.scope='L7';renderTab('summary');">📊 Go to Summary</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* =========================== GLOBAL STATE ========================== */
+const S = {
+  tab: 'summary',
+  scope: 'L7',
+  theme: 'light',
+  navOpen: true,
+  cards: { cats: [...CARD_CATS] },
+  digital: { sel: DIGITAL_CATS.slice(0, 3) },
+  donut: { path: [], sel: null },
+  mMode: 'all',
+  compare: { customDates: false, customCats: false, showSubs: false, chartType: 'bar', selDates: [], selCats: ['CARDS_ALL', 'DIGITAL_ALL'], from: '', to: '' },
+  dayvs: { a: null, b: null },
+  table: { group: 'ALL', q: '', sortK: 'tot', sortDir: -1 },
+  data: null,
+  ready: false,
+  validationResult: null
+};
+
+function chip(label, opts = {}) {
+  const classes = ['chip'];
+  if(opts.small !== false) classes.push('sm');
+  if(opts.on) classes.push('on');
+  if(opts.act) classes.push('click');
+  if(opts.tone) classes.push(opts.tone);
+  return `<span class="${classes.join(' ')}" ${opts.act ? `data-act="${opts.act}"` : ''} ${opts.arg ? `data-arg="${opts.arg}"` : ''}>${label}</span>`;
 }
 
 /* =========================== START APP ========================== */
